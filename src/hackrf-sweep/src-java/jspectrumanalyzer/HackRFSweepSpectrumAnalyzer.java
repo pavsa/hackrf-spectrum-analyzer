@@ -499,7 +499,7 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 		return isCapturing;
 	}
 	
-	private void processThread()
+	private void processingThread()
 	{
 		int counter = 0;
 
@@ -533,10 +533,13 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 					FFTBins bins = processingQueue.take();
 					if (!isCapturing)
 						continue;
-					boolean triggerChartRefresh = false;
+					boolean triggerChartRefresh = bins.fullSweepDone;
 					//continue;
-
-					triggerChartRefresh = datasetSpectrum.addNewData(bins);
+					
+					if (bins.freqStart != null && bins.sigPowdBm != null)
+					{
+						datasetSpectrum.addNewData(bins);
+					}
 
 					long timeDiff = System.currentTimeMillis() - lastChartUpdated;
 					if ((triggerChartRefresh/*  || timeDiff > 1000*/))
@@ -574,6 +577,7 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 						counter = 0;
 						lastChartUpdated = System.currentTimeMillis();
 					}
+
 				}
 				catch (InterruptedException e)
 				{
@@ -713,7 +717,7 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 				@Override public void run()
 				{
 					Thread.currentThread().setName("hackrf_sweep data processing thread");
-					processThread();
+					processingThread();
 				}
 			});
 			threadProcessing.start();
