@@ -38,8 +38,8 @@ public class HackRFSweepNativeBridge
 		{
 			@Override public void apply(byte sweep_started, int bins, DoubleByReference freqStart, float fftBinWidth, FloatByReference powerdBm)
 			{
-				double[] freqStartArr = freqStart.getPointer().getDoubleArray(0, bins);
-				float[] powerArr = powerdBm.getPointer().getFloatArray(0, bins);
+				double[] freqStartArr = bins == 0 ? null : freqStart.getPointer().getDoubleArray(0, bins);
+				float[] powerArr =  bins == 0 ? null : powerdBm.getPointer().getFloatArray(0, bins);
 				dataCallback.newSpectrumData(sweep_started==0 ? false : true, freqStartArr, fftBinWidth, powerArr);
 			}
 		};

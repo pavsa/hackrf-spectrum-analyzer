@@ -16,7 +16,7 @@
 ###Why?
 Other software is limited or hard to use
  
-###Requires:
+###Requirements:
 * HackRF One with [Firmware 2017.02.1](https://github.com/mossmann/hackrf/releases/tag/v2017.02.1) or newer (use linux inside virtual machine to [update the firmware](https://github.com/mossmann/hackrf/wiki/Updating-Firmware))
 * Libusb driver for HackRF One (see below)
 * 64bit v1.8+ Java JRE installed
