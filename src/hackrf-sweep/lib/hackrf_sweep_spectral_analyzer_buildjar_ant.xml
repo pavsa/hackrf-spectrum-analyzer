@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project hackrf-sweep with Jar-in-Jar Loader">
+    <!--this file was created by Eclipse Runnable JAR file Export Wizard-->
+    <!--ANT 1.7 is required-->
+    <!--define folder properties-->
+    <property name="dir.buildfile" value="."/>
+    <property name="dir.workspace" value=""/>
+    <property name="dir.jarfile" value="../build/lib"/>
+    <target name="create_run_jar">
+        <jar destfile="${dir.jarfile}/hackrf_sweep_spectrum_analyzer.jar">
+            <manifest>
+                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
+                <attribute name="Rsrc-Main-Class" value="jspectrumanalyzer.HackRFSweepSpectrumAnalyzer"/>
+                <attribute name="Class-Path" value="."/>
+                <attribute name="Rsrc-Class-Path" value="./ miglayout15-swing.jar jcommon-1.0.17.jar jfreechart-1.0.14.jar hackrf-sweep-jna.jar jna-min-4.3.0.jar"/>
+            </manifest>
+            <zipfileset src="jar-in-jar-loader.zip"/>
+            <fileset dir="../bin"/>
+            <zipfileset dir="../" includes="miglayout15-swing.jar"/>
+            <zipfileset dir="${dir.buildfile}" includes="jcommon-1.0.17.jar"/>
+            <zipfileset dir="${dir.buildfile}" includes="jfreechart-1.0.14.jar"/>
+            <zipfileset dir="${dir.buildfile}" includes="hackrf-sweep-jna.jar"/>
+            <zipfileset dir="${dir.buildfile}/jna" includes="jna-min-4.3.0.jar"/>
+        </jar>
+    </target>
+</project>
