@@ -60,6 +60,7 @@ public class WaterfallPlot extends JPanel
 		bufferedImages[1] = new BufferedImage(screenWidth, maxHeight, BufferedImage.TYPE_3BYTE_BGR);
 	}
 
+	private Rectangle2D.Float rect = new Rectangle2D.Float(0f, 0f, 1f, 1f);
 	/**
 	 * Adds new data to the waterfall plot and renders it
 	 * @param spectrum
@@ -82,8 +83,10 @@ public class WaterfallPlot extends JPanel
 		g.setColor(Color.black);
 		g.fillRect(0, 0, (int) width, 1);
 
-		Rectangle2D.Float rect = new Rectangle2D.Float(0f, 0f, 1f, 1f);
 		float binWidth = (float) (spectrum.getFFTBinSizeHz() / freqRange * width);
+		rect.x	= 0;
+		rect.y	= 0;
+		rect.height	= 0;
 		rect.width = binWidth;
 
 		float minimumValueDrawBuffer	= -150;
@@ -123,7 +126,7 @@ public class WaterfallPlot extends JPanel
 			g.draw(rect);
 		}
 		
-		renderingInfo = String.format("No. of FFT bins: %d%s / %.1ffps", size > 10000 ? size / 1000 : size, size > 10000 ? "k" : "", fps.getEma());
+		renderingInfo = String.format("No. of FFT bins: %d%s / %.1ffps", size >= 10000 ? size / 1000 : size, size >= 10000 ? "k" : "", fps.getEma());
 		fpsRenderedFrames++;
 		if (System.currentTimeMillis() - lastFPSRecalculated > 1000)
 		{

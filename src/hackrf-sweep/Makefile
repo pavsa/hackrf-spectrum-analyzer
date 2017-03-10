@@ -98,7 +98,7 @@ endif
 
 JNAERATOR				= $(CURDIR)/lib/jnaerator/jnaerator-0.13-20150328.111636-4-shaded.jar
 ZIP_FILE				= hackrf_spectrum_analyzer.zip
-
+ZIP_FILE_PATH			= $(OUTPUT_DIR)/../../$(ZIP_FILE)
 
 
 .NOTPARALLEL: all
@@ -106,7 +106,7 @@ ZIP_FILE				= hackrf_spectrum_analyzer.zip
 
 ifeq ($(ARCH_DEFINED), y)
 
-all: prepare $(DLL_LIB) create-zip
+all: prepare $(DLL_LIB) $(ZIP_FILE_PATH)
 
 else
 
@@ -120,10 +120,10 @@ dirs:
 	@echo "Creating directories"
 	@mkdir -p $(dir $(OBJECTS))
 	
-create-zip:
+$(ZIP_FILE_PATH): $(DLL_LIB)
 	mkdir -p $(RELEASE_DIR)
 	cd $(OUTPUT_DIR)/../../ && rm -rf $(ZIP_FILE) &&  zip -r $(ZIP_FILE)  *
-	yes | cp -rf $(OUTPUT_DIR)/../../$(ZIP_FILE) $(RELEASE_DIR)
+	yes | cp -rf $(ZIP_FILE_PATH) $(RELEASE_DIR)
 	#cd $(CURDIR)
 	
 
@@ -133,7 +133,7 @@ prepare: dirs $(OBJECTS) $(DLL_LIB_FFTW)
 	cp -f $(DLL_LIB_FFTW) $(DLL_LIB_PTHREAD) $(DLL_JNA) $(DLL_LIB_USB) $(OUTPUT_DIR)
 	cp -f lib/zadig_2.2.exe lib/program.ico lib/program.png $(OUTPUT_DIR)
 
-$(DLL_LIB):  $(OBJECTS) $(JNA_LIB) prepare
+$(DLL_LIB):  $(OBJECTS) $(JNA_LIB)
 	echo "building " $(DLL_LIB)
 	$(CXX) $(LDFLAGS)  -shared -Wl,--kill-at  -static-libgcc -static-libstdc++    $(LDPATHS)  $(OBJECTS)  -o $(DLL_LIB) $(LDLIBS)
 	strip --strip-unneeded $(DLL_LIB)
@@ -154,3 +154,4 @@ $(BUILD_PATH)/%.c.$(OBJECT_SUFFIX): %.c
 clean:
 	rm -f  $(OBJECTS) $(DLL_LIB) #$(JNA_LIB)
 	rm -rf $(OUTPUT_DIR) $(BUILD_PATH)
+	

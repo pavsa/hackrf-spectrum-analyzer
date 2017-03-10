@@ -12,6 +12,7 @@
 - hackrf_sweep integrated as a shared library
 - Peak display
 - High resolution waterfall plot
+- Spur filter - removes spur artifacts from the spectrum 
 
 ###Why?
 Other software is limited or hard to use

@@ -45,7 +45,7 @@ public class HackRFSweepSettingsUI extends JPanel
 		int maxFreq = 7250;
 		int freqStep = 1;
 
-		setLayout(new MigLayout("", "[123.00px,grow,leading]", "[][20px][][][20px][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]"));
+		setLayout(new MigLayout("", "[123.00px,grow,leading]", "[][20px][][][20px][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]"));
 
 		JLabel lblNewLabel = new JLabel("Frequency start [MHz]");
 		lblNewLabel.setForeground(Color.WHITE);
@@ -183,16 +183,21 @@ public class HackRFSweepSettingsUI extends JPanel
 		chckbxShowPeaks.setBackground(Color.BLACK);
 		add(chckbxShowPeaks, "cell 0 21,growx");
 		
+		JCheckBox chckbxRemoveSpurs = new JCheckBox("Spur filter (may distort real signals)");
+		chckbxRemoveSpurs.setForeground(Color.WHITE);
+		chckbxRemoveSpurs.setBackground(Color.BLACK);
+		add(chckbxRemoveSpurs, "cell 0 23");
+		
 		txtHackrfConnected = new JTextField();
 		txtHackrfConnected.setText("HackRF connected");
 		txtHackrfConnected.setForeground(Color.WHITE);
 		txtHackrfConnected.setBackground(Color.BLACK);
-		add(txtHackrfConnected, "cell 0 23,growx");
+		add(txtHackrfConnected, "cell 0 26,growx");
 		txtHackrfConnected.setColumns(10);
 		txtHackrfConnected.setBorder(null);
 		
 		JButton btnPause = new JButton("Pause");
-		add(btnPause, "cell 0 25,growx");
+		add(btnPause, "cell 0 28,growx");
 		btnPause.setBackground(Color.black);
 		
 		JButton btnAbout = new JButton("Visit homepage");
@@ -213,9 +218,9 @@ public class HackRFSweepSettingsUI extends JPanel
 		});
 		
 		Label labelVersion = new Label("Version: v"+Version.version);
-		add(labelVersion, "flowx,cell 0 36");
+		add(labelVersion, "flowx,cell 0 39");
 		btnAbout.setBackground(Color.BLACK);
-		add(btnAbout, "cell 0 36,alignx right");
+		add(btnAbout, "cell 0 39,alignx right");
 		btnPause.addActionListener(new ActionListener()
 		{
 			@Override public void actionPerformed(ActionEvent e)
@@ -254,6 +259,15 @@ public class HackRFSweepSettingsUI extends JPanel
 			@Override public void actionPerformed(ActionEvent e)
 			{
 				hackRFSettings.setFilterSpectrum(chckbxFilterSpectrum.isSelected());
+			}
+		});
+		
+		chckbxRemoveSpurs.setSelected(hackRFSettings.isSpurRemoval());
+		chckbxRemoveSpurs.addActionListener(new ActionListener()
+		{
+			@Override public void actionPerformed(ActionEvent e)
+			{
+				hackRFSettings.setSpurRemoval(chckbxRemoveSpurs.isSelected());
 			}
 		});
 	}
