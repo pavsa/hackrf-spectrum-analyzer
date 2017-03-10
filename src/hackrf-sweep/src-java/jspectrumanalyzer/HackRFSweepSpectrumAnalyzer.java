@@ -42,9 +42,11 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RectangleInsets;
 
 import jspectrumanalyzer.core.DatasetSpectrum;
+import jspectrumanalyzer.core.DatasetSpectrumPeak;
 import jspectrumanalyzer.core.FFTBins;
 import jspectrumanalyzer.core.HackRFSettings;
 import jspectrumanalyzer.core.HackRFSweepSettingsUI;
+import jspectrumanalyzer.core.SpurFilter;
 import jspectrumanalyzer.core.WaterfallPlot;
 import jspectrumanalyzer.nativebridge.HackRFSweepDataCallback;
 import jspectrumanalyzer.nativebridge.HackRFSweepNativeBridge;
@@ -63,7 +65,7 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 	private JFreeChart					chart					= ChartFactory.createXYLineChart("Spectrum analyzer", "Frequency [MHz]", "Power [dB]", dataset,
 			PlotOrientation.VERTICAL, false, false, false);
 
-	private DatasetSpectrum				datasetSpectrum;
+	private DatasetSpectrumPeak			datasetSpectrum;
 	private int							dropped					= 0;
 	private JFrame						f;
 	private boolean						filterSpectrum;
@@ -74,10 +76,10 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 	private int							parameterMaxFreqMHz		= 2500;
 	private int							parameterMinFreqMHz		= 2400;
 	private int							parameterSamples		= 8192;
-
 	private ArrayBlockingQueue<FFTBins>	processingQueue			= new ArrayBlockingQueue<>(1000);
 	private boolean						showPeaks				= false;
 	private float						spectrumInitValue		= -100;
+	private boolean 					spurRemoval				= false;
 
 	private Thread						threadHackrfSweep;
 	private ArrayBlockingQueue<Integer>	threadLaunchCommands	= new ArrayBlockingQueue<>(1);
@@ -122,7 +124,6 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 		XYPlot plot = chart.getXYPlot();
 		NumberAxis domainAxis = ((NumberAxis) plot.getDomainAxis());
 		NumberAxis rangeAxis = ((NumberAxis) plot.getRangeAxis());
-		//XYStepRenderer rend	= new XYStepRenderer();
 		XYLineAndShapeRenderer rend = new XYLineAndShapeRenderer();
 		rend.setBaseShapesVisible(false);
 
@@ -216,7 +217,7 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 		rangeAxis.setRange(-100, 10);
 		rangeAxis.setTickUnit(new NumberTickUnit(10, new DecimalFormat("###")));
 
-		domainAxis.setNumberFormatOverride(new DecimalFormat("#.###"));
+		domainAxis.setNumberFormatOverride(new DecimalFormat(" #.### "));
 
 		rend.setAutoPopulateSeriesStroke(false);
 		rend.setAutoPopulateSeriesPaint(false);
@@ -410,10 +411,9 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 	@Override public void setChartPeaksVisibility(boolean visible)
 	{
 		this.showPeaks = visible;
-		DatasetSpectrum p = datasetSpectrum;
+		DatasetSpectrumPeak p = datasetSpectrum;
 		if (p != null)
 		{
-			p.setPeaks(visible);
 			p.resetPeaks();
 		}
 	}
@@ -477,6 +477,20 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 			}
 		});
 	}
+	
+	@Override public void setSpurRemoval(boolean enable)
+	{
+		this.spurRemoval	= enable;
+		SpurFilter filter	= spurFilter;
+		if (filter != null){
+			filter.recalibrate();
+		}
+	}
+	
+	@Override public boolean isSpurRemoval()
+	{
+		return this.spurRemoval;
+	}
 
 	@Override public void registerListener(HackRFEventListener listener)
 	{
@@ -517,10 +531,17 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 			}
 			float binHz = bin1.fftBinWidthHz;
 
-			datasetSpectrum = new DatasetSpectrum(binHz, parameterMinFreqMHz, parameterMaxFreqMHz, spectrumInitValue, showPeaks, 15, 30000);
-
+			datasetSpectrum 		= new DatasetSpectrumPeak(binHz, parameterMinFreqMHz, parameterMaxFreqMHz, spectrumInitValue, 15, 10000);
 			chart.getXYPlot().getDomainAxis().setRange(parameterMinFreqMHz, parameterMaxFreqMHz);
 
+			
+			float maxPeakJitterdB	= 6;
+			float peakThresholdAboveNoise = 4;
+			int maxPeakBins	= 4;
+			int validIterations	= 25;
+			spurFilter = new SpurFilter(maxPeakJitterdB, peakThresholdAboveNoise, maxPeakBins, validIterations, datasetSpectrum);
+
+			
 			long lastChartUpdated = System.currentTimeMillis();
 			long lastScanStartTime = System.currentTimeMillis();
 			double lastFreq = 0;
@@ -541,13 +562,26 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 						datasetSpectrum.addNewData(bins);
 					}
 
-					long timeDiff = System.currentTimeMillis() - lastChartUpdated;
 					if ((triggerChartRefresh/*  || timeDiff > 1000*/))
 					{
 						//						System.out.println("ctr "+counter+" dropped "+dropped);
+						
+						/**
+						 * filter first
+						 */
+						if (spurRemoval){
+							spurFilter.filterDataset();
+						}
+						/**
+						 * after filtering, calculate peak spectrum
+						 */
+						if (showPeaks){
+							datasetSpectrum.refreshPeakSpectrum();
+						}
+						
 						XYSeries spectrumSeries = new XYSeries("spectrum");
 						spectrumSeries.setNotify(false);
-						datasetSpectrum.fillToXYSeries(spectrumSeries, false);
+						datasetSpectrum.fillToXYSeries(spectrumSeries);
 						spectrumSeries.setNotify(true);
 
 						XYSeries spectrumPeaks;
@@ -555,7 +589,7 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 						{
 							spectrumPeaks = new XYSeries("peaks");
 							spectrumPeaks.setNotify(false);
-							datasetSpectrum.fillToXYSeries(spectrumPeaks, true);
+							datasetSpectrum.fillPeaksToXYSeries(spectrumPeaks);
 							spectrumPeaks.setNotify(false);
 						}
 						else
@@ -613,7 +647,9 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 			threadLaunchCommands.offer(0);
 		}
 	}
-
+	
+	private volatile boolean forceStopSweep	 = false;
+	private SpurFilter spurFilter;
 	/**
 	 * no need to synchronize, executes only in launcher thread
 	 */
@@ -627,6 +663,7 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 				Thread.currentThread().setName("hackrf_sweep");
 				try
 				{
+					forceStopSweep	= false;
 					sweep();
 				}
 				catch (IOException e)
@@ -667,14 +704,17 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 	 */
 	private void stopHackrfSweep()
 	{
+		forceStopSweep	= true;
 		if (threadHackrfSweep != null)
 		{
 			while (threadHackrfSweep.isAlive())
 			{
+				forceStopSweep	= true;
+//				System.out.println("Calling HackRFSweepNativeBridge.stop()");
 				HackRFSweepNativeBridge.stop();
 				try
 				{
-					Thread.sleep(1);
+					Thread.sleep(20);
 				}
 				catch (InterruptedException e)
 				{
@@ -722,11 +762,24 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 			});
 			threadProcessing.start();
 
-			System.out.println("starting hackrf_sweep... " + parameterMinFreqMHz + "-" + parameterMaxFreqMHz + "MHz ");
-			System.out.println("hackrf_sweep params:  freq " + parameterMinFreqMHz + "-" + parameterMaxFreqMHz + "MHz  samples " + parameterSamples + "  lna: "
-					+ lnaGain + " vga: " + vgaGain);
-			fireHardwareStateChanged(false);
-			HackRFSweepNativeBridge.start(this, parameterMinFreqMHz, parameterMaxFreqMHz, parameterFFTBinHz, parameterSamples, lnaGain, vgaGain);
+			/**
+			 * Ensures auto-restart if HW disconnects
+			 */
+			while(forceStopSweep == false){
+				System.out.println("Starting hackrf_sweep... " + parameterMinFreqMHz + "-" + parameterMaxFreqMHz + "MHz ");
+				System.out.println("hackrf_sweep params:  freq " + parameterMinFreqMHz + "-" + parameterMaxFreqMHz + "MHz  samples " + parameterSamples + "  lna: "
+						+ lnaGain + " vga: " + vgaGain);
+				fireHardwareStateChanged(false);
+				HackRFSweepNativeBridge.start(this, parameterMinFreqMHz, parameterMaxFreqMHz, parameterFFTBinHz, parameterSamples, lnaGain, vgaGain);
+				fireHardwareStateChanged(false);
+				if (forceStopSweep==false){
+					Thread.sleep(1000);
+				}
+			}
+		}
+		catch (InterruptedException e)
+		{
+			e.printStackTrace();
 		}
 		finally
 		{
