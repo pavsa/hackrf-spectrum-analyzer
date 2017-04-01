@@ -1,7 +1,9 @@
 package jspectrumanalyzer.core;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
 
 public class DatasetSpectrumPeak extends DatasetSpectrum
@@ -18,7 +20,7 @@ public class DatasetSpectrumPeak extends DatasetSpectrum
 	 * stores real peaks and if {@link #spectrumPeak} falls more than preset value below it, start using values from {@link #spectrumPeak}
 	 */
 	protected float[]	spectrumPeakHold;
-
+	
 	public DatasetSpectrumPeak(float fftBinSizeHz, int freqStartMHz, int freqStopMHz, float spectrumInitPower, float peakFallThreshold, long peakFalloutMillis)
 	{
 		super(fftBinSizeHz, freqStartMHz, freqStopMHz, spectrumInitPower);
@@ -33,6 +35,8 @@ public class DatasetSpectrumPeak extends DatasetSpectrum
 		Arrays.fill(spectrumPeak, spectrumInitPower);
 		spectrumPeakHold = new float[datapoints];
 		Arrays.fill(spectrumPeakHold, spectrumInitPower);
+		
+
 	}
 
 	public void copyTo(DatasetSpectrumPeak filtered)
@@ -48,13 +52,7 @@ public class DatasetSpectrumPeak extends DatasetSpectrum
 	 */
 	public void fillPeaksToXYSeries(XYSeries series)
 	{
-		series.clear();
-		float[] spectrum = this.spectrumPeakHold;
-		for (int i = 0; i < spectrum.length; i++)
-		{
-			double freq = (freqStartHz + fftBinSizeHz * i) / 1000000;
-			series.add(freq, spectrum[i]);
-		}
+		fillToXYSeriesPriv(series, spectrumPeakHold);
 	}
 
 	public void refreshPeakSpectrum()
