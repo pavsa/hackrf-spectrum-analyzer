@@ -209,6 +209,7 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 		}
 		catch (Exception e)
 		{
+//			e.printStackTrace();
 		}
 		f.pack();
 		f.setVisible(true);
@@ -531,7 +532,7 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 			}
 			float binHz = bin1.fftBinWidthHz;
 
-			datasetSpectrum 		= new DatasetSpectrumPeak(binHz, parameterMinFreqMHz, parameterMaxFreqMHz, spectrumInitValue, 15, 10000);
+			datasetSpectrum 		= new DatasetSpectrumPeak(binHz, parameterMinFreqMHz, parameterMaxFreqMHz, spectrumInitValue, 15, 30000);
 			chart.getXYPlot().getDomainAxis().setRange(parameterMinFreqMHz, parameterMaxFreqMHz);
 
 			

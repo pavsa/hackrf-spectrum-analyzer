@@ -1,7 +1,9 @@
 package jspectrumanalyzer.core;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
 
 public class DatasetSpectrum implements Cloneable
@@ -13,6 +15,10 @@ public class DatasetSpectrum implements Cloneable
 
 	protected  float[]		spectrum;
 	protected  float		spectrumInitPower;
+	
+	protected ArrayList<ArrayList<XYDataItem>> cachedDataItems	= new ArrayList<>();
+	protected int cachedDataItemsIndex	= 0;
+	
 	/**
 	 * Inits
 	 * @param fftBinSizeHz
@@ -33,6 +39,15 @@ public class DatasetSpectrum implements Cloneable
 		int datapoints = (int) (Math.ceil(freqStopMHz - freqStartMHz) * 1000000d / fftBinSizeHz);
 		spectrum = new float[datapoints];
 		Arrays.fill(spectrum, spectrumInitPower);
+
+		for (int j = 0; j < 5; j++) {
+			ArrayList<XYDataItem> list	= new ArrayList<>();
+			for (int i = 0; i < datapoints; i++) {
+				double freq = (freqStartHz + fftBinSizeHz * i) / 1000000;
+				list.add(new XYDataItem(freq, 0));
+			}
+			cachedDataItems.add(list);
+		}
 	}
 	
 	@Override protected Object clone() throws CloneNotSupportedException
@@ -86,15 +101,34 @@ public class DatasetSpectrum implements Cloneable
 	 */
 	public void fillToXYSeries(XYSeries series)
 	{
-		series.clear();
-		float[] spectrum = this.spectrum;
-		for (int i = 0; i < spectrum.length; i++)
-		{
-			double freq = (freqStartHz + fftBinSizeHz * i) / 1000000;
-			series.add(freq, spectrum[i]);
-		}
+		fillToXYSeriesPriv(series, spectrum);
 	}
 
+	protected void fillToXYSeriesPriv(XYSeries series, float[] spectrum){
+		series.clear();
+		/**
+		 * caching decreases GC usage
+		 */
+		boolean useCached	= false;
+		if (!useCached){
+			for (int i = 0; i < spectrum.length; i++)
+			{
+				double freq = (freqStartHz + fftBinSizeHz * i) / 1000000;
+				series.add(freq, spectrum[i]);
+			}
+		}
+		else{
+			ArrayList<XYDataItem> items	= cachedDataItems.get(cachedDataItemsIndex);
+			for (int i = 0; i < spectrum.length; i++)
+			{
+				XYDataItem item	= items.get(i);
+				item.setY(spectrum[i]);
+				series.add(item);
+			}
+			cachedDataItemsIndex	= (cachedDataItemsIndex+1)%cachedDataItems.size();
+		}
+	}
+	
 	public float getFFTBinSizeHz()
 	{
 		return fftBinSizeHz;

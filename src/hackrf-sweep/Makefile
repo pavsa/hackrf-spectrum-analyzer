@@ -4,8 +4,6 @@ IS_RELEASE				= y
 IS_64BIT				= n
 #temporary build dir
 BUILD_PATH 				= obj
-#path to build dlls
-OUTPUT_DIR				= build/lib/$(LIB_DIR)
 #where the resulting release zip will be copied
 RELEASE_DIR				= ../../release/
 
@@ -79,6 +77,8 @@ endif
 
 #paths
 
+#path to build dlls
+OUTPUT_DIR				= build/lib/$(LIB_DIR)
 
 JNA_LIB					= lib/hackrf-sweep-jna.jar
 JNA_HEADER				= $(CURDIR)/lib/hackrf/host/hackrf-tools/src/hackrf_sweep.h
@@ -131,7 +131,7 @@ $(ZIP_FILE_PATH): $(DLL_LIB)
 prepare: dirs $(OBJECTS) $(DLL_LIB_FFTW)
 	mkdir -p $(OUTPUT_DIR)
 	cp -f $(DLL_LIB_FFTW) $(DLL_LIB_PTHREAD) $(DLL_JNA) $(DLL_LIB_USB) $(OUTPUT_DIR)
-	cp -f lib/zadig_2.2.exe lib/program.ico lib/program.png $(OUTPUT_DIR)
+	cp -f lib/zadig_2.2.exe lib/program.ico lib/program.png $(OUTPUT_DIR)/../
 
 $(DLL_LIB):  $(OBJECTS) $(JNA_LIB)
 	echo "building " $(DLL_LIB)

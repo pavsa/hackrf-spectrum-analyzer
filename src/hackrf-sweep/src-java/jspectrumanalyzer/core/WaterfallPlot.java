@@ -8,6 +8,13 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
@@ -24,23 +31,29 @@ public class WaterfallPlot extends JPanel
 	private static final long	serialVersionUID		= 3249110968962287324L;
 	private BufferedImage		bufferedImages[]		= new BufferedImage[2];
 	private int					chartXOffset			= 0, chartWidth = 100;
+	private boolean displayMarker	= false;
+	private double displayMarkerFrequency	= 0;
+	private int displayMarkerX	= 0;
 	private int					drawIndex				= 0;
-	private EMA					fps						= new EMA(3);
-	private int					fpsRenderedFrames		= 0;
-	private long				lastFPSRecalculated		= 0;
-	private ColorPalette		palette					= new HotIronBluePalette();
-	private String				renderingInfo			= "";
-
-	private int					screenWidth;
-
-	private double				spectrumPaletteSize		= 65;
-
-	private double				spectrumPaletteStart	= -90;
 	/**
 	 * stores max value in pixel
 	 */
 	private float 				drawMaxBuffer[];
+	private EMA					fps						= new EMA(3);
+
+	private int					fpsRenderedFrames		= 0;
+
+	private long				lastFPSRecalculated		= 0;
+
+	private DatasetSpectrum lastSpectrum	= null;
+	private ColorPalette		palette					= new HotIronBluePalette();
 	
+	private Rectangle2D.Float rect = new Rectangle2D.Float(0f, 0f, 1f, 1f);
+
+	private String				renderingInfo			= "";
+	private int					screenWidth;
+	private double				spectrumPaletteSize		= 65;
+	private double				spectrumPaletteStart	= -90;
 	public WaterfallPlot(ChartPanel chartPanel, int maxHeight)
 	{
 		setPreferredSize(new Dimension(100, 200));
@@ -58,9 +71,34 @@ public class WaterfallPlot extends JPanel
 		drawMaxBuffer	= new float[screenWidth];
 		bufferedImages[0] = new BufferedImage(screenWidth, maxHeight, BufferedImage.TYPE_3BYTE_BGR);
 		bufferedImages[1] = new BufferedImage(screenWidth, maxHeight, BufferedImage.TYPE_3BYTE_BGR);
+		
+		/**
+		 * setup frequency marker
+		 */
+		addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				displayMarker	= false;
+				int x	= e.getX();
+				if (x < chartXOffset || x > chartXOffset+chartWidth){
+					return;
+				}
+				double freq	= translateChartXToFrequency(x-chartXOffset);
+				if (freq != -1){
+					displayMarker	= true;
+					displayMarkerFrequency	= freq;
+					displayMarkerX	= x;
+				}
+				WaterfallPlot.this.repaint();
+			}
+		});
+		addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseExited(MouseEvent e) {
+				displayMarker	= false;
+			}
+		});
 	}
-
-	private Rectangle2D.Float rect = new Rectangle2D.Float(0f, 0f, 1f, 1f);
 	/**
 	 * Adds new data to the waterfall plot and renders it
 	 * @param spectrum
@@ -73,6 +111,8 @@ public class WaterfallPlot extends JPanel
 		double width = bufferedImages[0].getWidth();
 		double spectrumPalleteMax = spectrumPaletteStart + spectrumPaletteSize;
 
+		this.lastSpectrum	= spectrum;
+		
 		/**
 		 * shift image by one pixel down
 		 */
@@ -139,6 +179,13 @@ public class WaterfallPlot extends JPanel
 		repaint();
 	}
 
+	private void copyImage(BufferedImage src, BufferedImage dst)
+	{
+		Graphics2D g = dst.createGraphics();
+		g.drawImage(src, 0, 0, null);
+		g.dispose();
+	}
+	
 	/**
 	 * Draws color palette into given area from bottom (0%) to top (100%)
 	 * @param g
@@ -157,6 +204,16 @@ public class WaterfallPlot extends JPanel
 			g.setColor(c);
 			g.fillRect(0, i, w, step);
 		}
+
+		/**
+		 * draw border around the scale
+		 */
+		int thickness	= 2;
+		g.setColor(Color.darkGray);
+		g.fillRect(0, 0, w, thickness);
+		g.fillRect(w-thickness, 0, thickness, h);
+		g.fillRect(0, h-thickness, w, thickness);
+		g.dispose();
 	}
 
 	public int getHistorySize()
@@ -172,6 +229,27 @@ public class WaterfallPlot extends JPanel
 	public double getSpectrumPaletteStart()
 	{
 		return spectrumPaletteStart;
+	}
+
+	@Override protected void paintComponent(Graphics arg0)
+	{
+		Graphics2D g = (Graphics2D) arg0;
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		int w = chartWidth;
+		int h = getHeight();
+		g.setColor(Color.black);
+		g.fillRect(0, 0, getWidth(), getHeight());
+
+		g.drawImage(bufferedImages[drawIndex], chartXOffset, 0, w, h, null);
+		
+		if (displayMarker){
+			g.setColor(Color.gray);
+			g.drawLine(displayMarkerX, 0, displayMarkerX, h);
+			g.drawString(String.format("%.1fMHz", displayMarkerFrequency/1000000.0), displayMarkerX+5, h/2);
+		}//finish marker 
+		
+		g.setColor(Color.white);
+		g.drawString(renderingInfo, chartXOffset + w - 150, h - 20);
 	}
 
 	public void setDrawingOffsets(int xOffsetLeft, int width)
@@ -205,24 +283,20 @@ public class WaterfallPlot extends JPanel
 		this.spectrumPaletteStart = dB;
 	}
 
-	private void copyImage(BufferedImage src, BufferedImage dst)
-	{
-		Graphics2D g = dst.createGraphics();
-		g.drawImage(src, 0, 0, null);
-		g.dispose();
-	}
-
-	@Override protected void paintComponent(Graphics arg0)
-	{
-		Graphics2D g = (Graphics2D) arg0;
-		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		int w = chartWidth;
-		int h = getHeight();
-		g.setColor(Color.black);
-		g.fillRect(0, 0, getWidth(), getHeight());
-
-		g.drawImage(bufferedImages[drawIndex], chartXOffset, 0, w, h, null);
-		g.setColor(Color.white);
-		g.drawString(renderingInfo, chartXOffset + w - 150, h - 20);
+	private double translateChartXToFrequency(int x){
+		if (lastSpectrum != null){
+			double startFreq = lastSpectrum.getFreqStartMHz() * 1000000d;
+			double stopFreq = lastSpectrum.getFreqStopMHz() * 1000000d;
+			double freqRange = (stopFreq - startFreq);
+			double width = bufferedImages[0].getWidth();
+			double percentageFreq = x/(double)chartWidth;
+			double freq = percentageFreq*freqRange + startFreq;
+			if (freq > stopFreq)
+				freq = stopFreq;
+			if (freq < startFreq)
+				freq	= startFreq;
+			return freq;
+		}
+		return -1;
 	}
 }
