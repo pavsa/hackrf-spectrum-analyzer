@@ -45,7 +45,7 @@ public class HackRFSweepSettingsUI extends JPanel
 		int maxFreq = 7250;
 		int freqStep = 1;
 
-		setLayout(new MigLayout("", "[123.00px,grow,leading]", "[][20px][][][20px][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]"));
+		setLayout(new MigLayout("", "[123.00px,grow,leading]", "[][20px][][][20px][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]"));
 
 		JLabel lblNewLabel = new JLabel("Frequency start [MHz]");
 		lblNewLabel.setForeground(Color.WHITE);
@@ -73,9 +73,7 @@ public class HackRFSweepSettingsUI extends JPanel
 		spinnerFFTBinHz.setModel(new SpinnerListModel(
 				new String[] { "1000", "2000", "5000", "10 000", "20 000", "50 000", "100 000", "200 000", "500 000", "1 000 000", "2 000 000", "5 000 000" }));
 		add(spinnerFFTBinHz, "cell 0 7,growx");
-		spinnerFFTBinHz.setValue("100 000");
 		((ListEditor) spinnerFFTBinHz.getEditor()).getTextField().setHorizontalAlignment(JTextField.RIGHT);
-
 		spinnerFFTBinHz.addChangeListener(new ChangeListener()
 		{
 			@Override public void stateChanged(ChangeEvent e)
@@ -83,6 +81,7 @@ public class HackRFSweepSettingsUI extends JPanel
 				hackRFSettings.setFFTBin(Integer.parseInt(spinnerFFTBinHz.getValue().toString().replaceAll("\\s", "")));
 			}
 		});
+		spinnerFFTBinHz.setValue("100 000");
 
 		JLabel lblGain = new JLabel("Gain [dB]");
 		lblGain.setForeground(Color.WHITE);
@@ -121,10 +120,23 @@ public class HackRFSweepSettingsUI extends JPanel
 		((ListEditor) spinner_numberOfSamples.getEditor()).getTextField().setEditable(false);
 		;
 		add(spinner_numberOfSamples, "cell 0 13,growx");
+		
+		JCheckBox chckbxAntennaPower = new JCheckBox("Antenna power");
+		chckbxAntennaPower.setBackground(Color.BLACK);
+		chckbxAntennaPower.setForeground(Color.WHITE);
+		add(chckbxAntennaPower, "cell 0 15");
+		chckbxAntennaPower.setSelected(hackRFSettings.getAntennaPowerEnable());
+		chckbxAntennaPower.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				hackRFSettings.setAntennaPowerEnable(chckbxAntennaPower.isSelected());
+			}
+		});
+
 
 		JLabel lblWaterfallPaletteStart = new JLabel("Waterfall palette start [dB]");
 		lblWaterfallPaletteStart.setForeground(Color.WHITE);
-		add(lblWaterfallPaletteStart, "cell 0 15");
+		add(lblWaterfallPaletteStart, "cell 0 18");
 
 		JSlider slider_waterfallPaletteStart = new JSlider();
 		slider_waterfallPaletteStart.setForeground(Color.WHITE);
@@ -132,7 +144,7 @@ public class HackRFSweepSettingsUI extends JPanel
 		slider_waterfallPaletteStart.setMinimum(-100);
 		slider_waterfallPaletteStart.setMaximum(0);
 		slider_waterfallPaletteStart.setValue(-30);
-		add(slider_waterfallPaletteStart, "cell 0 16,growx");
+		add(slider_waterfallPaletteStart, "cell 0 19,growx");
 		slider_waterfallPaletteStart.setValue(hackRFSettings.getSpectrumPaletteStart());
 		slider_waterfallPaletteStart.addChangeListener(new ChangeListener()
 		{
@@ -153,12 +165,12 @@ public class HackRFSweepSettingsUI extends JPanel
 
 		JLabel lblWaterfallPaletteLength = new JLabel("Waterfall palette length [dB]");
 		lblWaterfallPaletteLength.setForeground(Color.WHITE);
-		add(lblWaterfallPaletteLength, "cell 0 18");
+		add(lblWaterfallPaletteLength, "cell 0 21");
 
 		JSlider slider_waterfallPaletteSize = new JSlider(HackRFSweepSpectrumAnalyzer.SPECTRUM_PALETTE_SIZE_MIN, 100);
 		slider_waterfallPaletteSize.setBackground(Color.BLACK);
 		slider_waterfallPaletteSize.setForeground(Color.WHITE);
-		add(slider_waterfallPaletteSize, "cell 0 19,growx");
+		add(slider_waterfallPaletteSize, "cell 0 22,growx");
 
 		slider_waterfallPaletteSize.setValue(hackRFSettings.getSpectrumPaletteSize());
 
@@ -181,23 +193,23 @@ public class HackRFSweepSettingsUI extends JPanel
 		JCheckBox chckbxShowPeaks = new JCheckBox("Show peaks");
 		chckbxShowPeaks.setForeground(Color.WHITE);
 		chckbxShowPeaks.setBackground(Color.BLACK);
-		add(chckbxShowPeaks, "cell 0 21,growx");
+		add(chckbxShowPeaks, "cell 0 24,growx");
 		
 		JCheckBox chckbxRemoveSpurs = new JCheckBox("Spur filter (may distort real signals)");
 		chckbxRemoveSpurs.setForeground(Color.WHITE);
 		chckbxRemoveSpurs.setBackground(Color.BLACK);
-		add(chckbxRemoveSpurs, "cell 0 23");
+		add(chckbxRemoveSpurs, "cell 0 26");
 		
 		txtHackrfConnected = new JTextField();
 		txtHackrfConnected.setText("HackRF connected");
 		txtHackrfConnected.setForeground(Color.WHITE);
 		txtHackrfConnected.setBackground(Color.BLACK);
-		add(txtHackrfConnected, "cell 0 26,growx");
+		add(txtHackrfConnected, "cell 0 29,growx");
 		txtHackrfConnected.setColumns(10);
 		txtHackrfConnected.setBorder(null);
 		
 		JButton btnPause = new JButton("Pause");
-		add(btnPause, "cell 0 28,growx");
+		add(btnPause, "cell 0 31,growx");
 		btnPause.setBackground(Color.black);
 		
 		JButton btnAbout = new JButton("Visit homepage");
@@ -218,9 +230,9 @@ public class HackRFSweepSettingsUI extends JPanel
 		});
 		
 		Label labelVersion = new Label("Version: v"+Version.version);
-		add(labelVersion, "flowx,cell 0 39");
+		add(labelVersion, "flowx,cell 0 42");
 		btnAbout.setBackground(Color.BLACK);
-		add(btnAbout, "cell 0 39,alignx right");
+		add(btnAbout, "cell 0 42,alignx right");
 		btnPause.addActionListener(new ActionListener()
 		{
 			@Override public void actionPerformed(ActionEvent e)
@@ -240,7 +252,6 @@ public class HackRFSweepSettingsUI extends JPanel
 			}
 		});;
 		
-
 		JCheckBox chckbxFilterSpectrum = new JCheckBox("Filter spectrum");
 		chckbxFilterSpectrum.setBackground(Color.BLACK);
 		chckbxFilterSpectrum.setForeground(Color.WHITE);

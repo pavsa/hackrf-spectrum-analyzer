@@ -1,5 +1,5 @@
 #Settings:
-JAVA_EXECUTABLE			= "c:\Program Files (x86)\Java\jre\bin\java.exe" #required to generate jna wrapper
+JAVA_EXECUTABLE			= "c:\Program Files\Java\jre\bin\java.exe" #required to generate jna wrapper
 IS_RELEASE				= y
 IS_64BIT				= n
 #temporary build dir
@@ -81,7 +81,7 @@ endif
 OUTPUT_DIR				= build/lib/$(LIB_DIR)
 
 JNA_LIB					= lib/hackrf-sweep-jna.jar
-JNA_HEADER				= $(CURDIR)/lib/hackrf/host/hackrf-tools/src/hackrf_sweep.h
+JNA_SWEEP_HEADER				= $(CURDIR)/lib/hackrf/host/hackrf-tools/src/hackrf_sweep.h
 
 
 DLL_LIB_PTHREAD			= lib/$(LIB_DIR)/libwinpthread-1.dll
@@ -138,8 +138,9 @@ $(DLL_LIB):  $(OBJECTS) $(JNA_LIB)
 	$(CXX) $(LDFLAGS)  -shared -Wl,--kill-at  -static-libgcc -static-libstdc++    $(LDPATHS)  $(OBJECTS)  -o $(DLL_LIB) $(LDLIBS)
 	strip --strip-unneeded $(DLL_LIB)
 
-$(JNA_LIB): $(JNA_HEADER) $(OBJECTS)
-	$(JAVA_EXECUTABLE) -Xmx1024M -jar $(JNAERATOR) -limitComments -emptyStructsAsForwardDecls -f  -skipLibraryInstance -runtime JNA -direct  -mode Jar -o lib -jar $(JNA_LIB) -v -library "hackrf-sweep" $(JNA_HEADER)
+$(JNA_LIB): $(JNA_SWEEP_HEADER) $(OBJECTS)
+	$(JAVA_EXECUTABLE) -Xmx1024M -jar $(JNAERATOR) -limitComments -emptyStructsAsForwardDecls -f  -skipLibraryInstance -runtime JNA -direct  -mode Jar -o lib -jar $(JNA_LIB) -v -library "hackrf-sweep" $(JNA_SWEEP_HEADER)
+	$(JAVA_EXECUTABLE) -Xmx1024M -jar $(JNAERATOR) -limitComments -emptyStructsAsForwardDecls -f  -skipLibraryInstance -runtime JNA -direct  -mode Jar -o lib -jar libhackrf-jna.jar -v -library "hackrf-sweep"  $(CURDIR)/lib/hackrf/host/libhackrf/src/hackrf.h
 	rm -rf $(CURDIR)/_jnaerator.*
 
 
