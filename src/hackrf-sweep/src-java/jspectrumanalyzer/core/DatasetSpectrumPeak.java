@@ -55,6 +55,15 @@ public class DatasetSpectrumPeak extends DatasetSpectrum
 		fillToXYSeriesPriv(series, spectrumPeakHold);
 	}
 
+	public double calculateSpectrumPeakPower(){
+		double powerSum	= 0;
+		for (int i = 0; i < spectrumPeakHold.length; i++) {
+			powerSum	+= Math.pow(10, spectrumPeakHold[i]/10); /*convert dB to mW to sum power in linear form*/
+		}
+		powerSum	= 10*Math.log10(powerSum); /*convert back to dB*/ 
+		return powerSum;
+	}
+	
 	public void refreshPeakSpectrum()
 	{
 		long timeDiffFromPrevValueMillis = System.currentTimeMillis() - lastAdded;

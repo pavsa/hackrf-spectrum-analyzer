@@ -72,4 +72,7 @@ public interface HackRFSettings
 	
 	public void setSpectrumPaletteStart(int dB);
 	public void setSpurRemoval(boolean enable);
+	
+	public void setAntennaPowerEnable(boolean enable);
+	public boolean getAntennaPowerEnable();
 }

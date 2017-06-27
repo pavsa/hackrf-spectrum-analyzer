@@ -6,6 +6,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -39,13 +42,16 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.Range;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.ui.RectangleAnchor;
 import org.jfree.ui.RectangleInsets;
+import org.jfree.ui.TextAnchor;
 
 import jspectrumanalyzer.core.DatasetSpectrum;
 import jspectrumanalyzer.core.DatasetSpectrumPeak;
 import jspectrumanalyzer.core.FFTBins;
 import jspectrumanalyzer.core.HackRFSettings;
 import jspectrumanalyzer.core.HackRFSweepSettingsUI;
+import jspectrumanalyzer.core.PowerCalibration;
 import jspectrumanalyzer.core.SpurFilter;
 import jspectrumanalyzer.core.WaterfallPlot;
 import jspectrumanalyzer.nativebridge.HackRFSweepDataCallback;
@@ -76,11 +82,11 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 	private int							parameterMaxFreqMHz		= 2500;
 	private int							parameterMinFreqMHz		= 2400;
 	private int							parameterSamples		= 8192;
+	private boolean						parameterAntPower		= false;
 	private ArrayBlockingQueue<FFTBins>	processingQueue			= new ArrayBlockingQueue<>(1000);
 	private boolean						showPeaks				= false;
-	private float						spectrumInitValue		= -100;
+	private float						spectrumInitValue		= -150;
 	private boolean 					spurRemoval				= false;
-
 	private Thread						threadHackrfSweep;
 	private ArrayBlockingQueue<Integer>	threadLaunchCommands	= new ArrayBlockingQueue<>(1);
 
@@ -127,7 +133,7 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 		XYLineAndShapeRenderer rend = new XYLineAndShapeRenderer();
 		rend.setBaseShapesVisible(false);
 
-		ChartPanel chartPanel = new ChartPanel(chart);
+		chartPanel = new ChartPanel(chart);
 		chartPanel.setMaximumDrawWidth(4096);
 		chartPanel.setMaximumDrawHeight(2160);
 		chartPanel.setMouseWheelEnabled(false);
@@ -182,6 +188,8 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 			}
 		});
 
+		addChartMouseMarkers();
+		
 		waterfallPlot = new WaterfallPlot(chartPanel, 300);
 
 		waterfallPaletteStartMarker = new ValueMarker(waterfallPlot.getSpectrumPaletteStart(), palette2, new BasicStroke(1f));
@@ -215,7 +223,7 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 		f.setVisible(true);
 
 		rangeAxis.setAutoRange(false);
-		rangeAxis.setRange(-100, 10);
+		rangeAxis.setRange(-110, 0);
 		rangeAxis.setTickUnit(new NumberTickUnit(10, new DecimalFormat("###")));
 
 		domainAxis.setNumberFormatOverride(new DecimalFormat(" #.### "));
@@ -288,6 +296,50 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 		}));
 	}
 
+	private void addChartMouseMarkers() {
+		ValueMarker freqMarker	= new ValueMarker(0, Color.WHITE, new BasicStroke(1f));
+		freqMarker.setLabelPaint(Color.white);
+		freqMarker.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
+		freqMarker.setLabelTextAnchor(TextAnchor.TOP_LEFT);
+		freqMarker.setLabelFont(new Font(Font.MONOSPACED, Font.BOLD, 16));
+		ValueMarker signalMarker	= new ValueMarker(0, Color.WHITE, new BasicStroke(1f));
+		signalMarker.setLabelPaint(Color.white);
+		signalMarker.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
+		signalMarker.setLabelTextAnchor(TextAnchor.BOTTOM_RIGHT);
+		signalMarker.setLabelFont(new Font(Font.MONOSPACED, Font.BOLD, 16));
+
+		chartPanel.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				int x	= e.getX();
+				int y 	= e.getY();
+
+				XYPlot plot	= chart.getXYPlot();
+				Rectangle2D subplotArea = chartPanel.getChartRenderingInfo().getPlotInfo().getDataArea();
+				double crosshairRange	= plot.getRangeAxis().java2DToValue(y, subplotArea, plot.getRangeAxisEdge());
+				signalMarker.setValue(crosshairRange);
+				signalMarker.setLabel(String.format("%.1fdB", crosshairRange));
+				double crosshairDomain	= plot.getDomainAxis().java2DToValue(x, subplotArea, plot.getDomainAxisEdge());
+				freqMarker.setValue(crosshairDomain);
+				freqMarker.setLabel(String.format("%.1fMHz", crosshairDomain));
+			}
+		});
+		chartPanel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseExited(MouseEvent e) {
+				chart.getXYPlot().clearDomainMarkers();
+				chart.getXYPlot().clearRangeMarkers();
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				chart.getXYPlot().clearDomainMarkers();
+				chart.getXYPlot().clearRangeMarkers();
+				chart.getXYPlot().addRangeMarker(signalMarker);
+				chart.getXYPlot().addDomainMarker(freqMarker);
+			}
+		});
+	}
+
 	public boolean isHWSendingData	= false;
 	private void fireHardwareStateChanged(boolean sendingData)
 	{
@@ -343,6 +395,17 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 		}
 	}
 
+	@Override
+	public boolean getAntennaPowerEnable() {
+		return parameterAntPower;
+	}
+	
+	@Override
+	public void setAntennaPowerEnable(boolean enable) {
+		this.parameterAntPower	= enable;
+		restartHackrfSweep();
+	}
+	
 	@Override public int getFFTBinHz()
 	{
 		return parameterFFTBinHz;
@@ -532,9 +595,10 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 			}
 			float binHz = bin1.fftBinWidthHz;
 
+//			PowerCalibration calibration	 = new PowerCalibration(-45, -12.5, 40); 
+			
 			datasetSpectrum 		= new DatasetSpectrumPeak(binHz, parameterMinFreqMHz, parameterMaxFreqMHz, spectrumInitValue, 15, 30000);
 			chart.getXYPlot().getDomainAxis().setRange(parameterMinFreqMHz, parameterMaxFreqMHz);
-
 			
 			float maxPeakJitterdB	= 6;
 			float peakThresholdAboveNoise = 4;
@@ -560,6 +624,7 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 					
 					if (bins.freqStart != null && bins.sigPowdBm != null)
 					{
+//						PowerCalibration.correctPower(calibration, parameterGaindB, bins);
 						datasetSpectrum.addNewData(bins);
 					}
 
@@ -578,6 +643,7 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 						 */
 						if (showPeaks){
 							datasetSpectrum.refreshPeakSpectrum();
+							waterfallPlot.setStatusMessage(String.format("Total Spectrum Peak Power %.1fdBm", datasetSpectrum.calculateSpectrumPeakPower()));
 						}
 						
 						XYSeries spectrumSeries = new XYSeries("spectrum");
@@ -651,6 +717,7 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 	
 	private volatile boolean forceStopSweep	 = false;
 	private SpurFilter spurFilter;
+	private ChartPanel chartPanel;
 	/**
 	 * no need to synchronize, executes only in launcher thread
 	 */
@@ -771,7 +838,7 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 				System.out.println("hackrf_sweep params:  freq " + parameterMinFreqMHz + "-" + parameterMaxFreqMHz + "MHz  samples " + parameterSamples + "  lna: "
 						+ lnaGain + " vga: " + vgaGain);
 				fireHardwareStateChanged(false);
-				HackRFSweepNativeBridge.start(this, parameterMinFreqMHz, parameterMaxFreqMHz, parameterFFTBinHz, parameterSamples, lnaGain, vgaGain);
+				HackRFSweepNativeBridge.start(this, parameterMinFreqMHz, parameterMaxFreqMHz, parameterFFTBinHz, parameterSamples, lnaGain, vgaGain, parameterAntPower);
 				fireHardwareStateChanged(false);
 				if (forceStopSweep==false){
 					Thread.sleep(1000);

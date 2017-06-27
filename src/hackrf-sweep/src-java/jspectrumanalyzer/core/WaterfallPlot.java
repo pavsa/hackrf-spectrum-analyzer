@@ -54,6 +54,8 @@ public class WaterfallPlot extends JPanel
 	private int					screenWidth;
 	private double				spectrumPaletteSize		= 65;
 	private double				spectrumPaletteStart	= -90;
+	private String 				statusMessage			= "";
+	
 	public WaterfallPlot(ChartPanel chartPanel, int maxHeight)
 	{
 		setPreferredSize(new Dimension(100, 200));
@@ -166,7 +168,7 @@ public class WaterfallPlot extends JPanel
 			g.draw(rect);
 		}
 		
-		renderingInfo = String.format("No. of FFT bins: %d%s / %.1ffps", size >= 10000 ? size / 1000 : size, size >= 10000 ? "k" : "", fps.getEma());
+		renderingInfo = String.format("RBW %.1fkHz / FFT bins: %d%s / %.1ffps", lastSpectrum == null ? 0 : lastSpectrum.getFFTBinSizeHz()/1000d, size >= 10000 ? size / 1000 : size, size >= 10000 ? "k" : "", fps.getEma());
 		fpsRenderedFrames++;
 		if (System.currentTimeMillis() - lastFPSRecalculated > 1000)
 		{
@@ -249,9 +251,17 @@ public class WaterfallPlot extends JPanel
 		}//finish marker 
 		
 		g.setColor(Color.white);
-		g.drawString(renderingInfo, chartXOffset + w - 150, h - 20);
+		int x	= chartXOffset + w - 250;
+		int y	= h - 20;
+		g.drawString(renderingInfo, x, y-20);
+		g.drawString(statusMessage, x, y);
 	}
 
+	public void setStatusMessage(String message)
+	{
+		this.statusMessage	= message;
+	}
+	
 	public void setDrawingOffsets(int xOffsetLeft, int width)
 	{
 		this.chartXOffset = xOffsetLeft;
