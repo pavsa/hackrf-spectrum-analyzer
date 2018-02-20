@@ -1,0 +1,2 @@
+hackrf_sweep.o: lib/hackrf/host/hackrf-tools/src/hackrf_sweep.c \
+ lib/hackrf/host/hackrf-tools/src/hackrf_sweep.h

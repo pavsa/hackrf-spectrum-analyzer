@@ -1,10 +1,10 @@
 package jspectrumanalyzer.core;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
+
+import jspectrumanalyzer.core.jfc.XYSeriesImmutable;
 
 public class DatasetSpectrumPeak extends DatasetSpectrum
 {
@@ -39,6 +39,10 @@ public class DatasetSpectrumPeak extends DatasetSpectrum
 
 	}
 
+	public void setPeakFalloutMillis(long peakFalloutMillis) {
+		this.peakFalloutMillis = peakFalloutMillis;
+	}
+	
 	public void copyTo(DatasetSpectrumPeak filtered)
 	{
 		super.copyTo(filtered);
@@ -53,6 +57,20 @@ public class DatasetSpectrumPeak extends DatasetSpectrum
 	public void fillPeaksToXYSeries(XYSeries series)
 	{
 		fillToXYSeriesPriv(series, spectrumPeakHold);
+//		fillToXYSeriesPriv(series, spectrumPeak);
+	}
+	
+
+	public XYSeriesImmutable createPeaksDataset(String name) {
+		float[] xValues	= new float[spectrum.length];
+		float[] yValues	= spectrumPeakHold;
+		for (int i = 0; i < spectrum.length; i++)
+		{
+			float freq = (freqStartHz + fftBinSizeHz * i) / 1000000f;
+			xValues[i]	= freq;
+		}
+		XYSeriesImmutable xySeriesF	= new XYSeriesImmutable(name, xValues, yValues);
+		return xySeriesF;
 	}
 
 	public double calculateSpectrumPeakPower(){
@@ -64,12 +82,24 @@ public class DatasetSpectrumPeak extends DatasetSpectrum
 		return powerSum;
 	}
 	
+	private long debugLastPeakRerfreshTime	= 0;
 	public void refreshPeakSpectrum()
 	{
+		if (false) {
+			long debugMinPeakRefreshTime	= 100;
+			if (System.currentTimeMillis()-debugLastPeakRerfreshTime < debugMinPeakRefreshTime)
+				return;
+			debugLastPeakRerfreshTime	= System.currentTimeMillis();
+		}
+		
 		long timeDiffFromPrevValueMillis = System.currentTimeMillis() - lastAdded;
+		if (timeDiffFromPrevValueMillis < 1)
+			timeDiffFromPrevValueMillis = 1;
+		
 		lastAdded = System.currentTimeMillis();
-
-		peakFallThreshold = 10;
+		
+//		peakFallThreshold = 10;
+//		peakFalloutMillis	= 30000;
 		for (int spectrIndex = 0; spectrIndex < spectrum.length; spectrIndex++)
 		{
 			float spectrumVal = spectrum[spectrIndex];

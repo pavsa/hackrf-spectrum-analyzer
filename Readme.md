@@ -9,10 +9,11 @@
 - Optimized for only one purpose - to use HackRF as a spectrum analyzer
 - All changes in settings restart hackrf_sweep automatically 
 - Easy retuning    
-- hackrf_sweep integrated as a shared library
-- Peak display
+- Peak / Persistent display
+- Frequency allocation bands for EU
 - High resolution waterfall plot
 - Spur filter - removes spur artifacts from the spectrum 
+- hackrf_sweep integrated as a shared library
 
 ### Why?
 Other software is limited or hard to use

@@ -6,18 +6,24 @@ import java.util.Arrays;
 import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
 
+import jspectrumanalyzer.core.jfc.XYSeriesImmutable;
+
 public class DatasetSpectrum implements Cloneable
 {
-	protected  final float	fftBinSizeHz;
-	protected  final long	freqStartHz;
-	protected  final int	freqStartMHz;
-	protected  final int	freqStopMHz;
-
-	protected  float[]		spectrum;
-	protected  float		spectrumInitPower;
-	
+	/**
+	 * caching decreases GC usage
+	 */
+	private final boolean useCached	= false;
 	protected ArrayList<ArrayList<XYDataItem>> cachedDataItems	= new ArrayList<>();
 	protected int cachedDataItemsIndex	= 0;
+	protected  final float	fftBinSizeHz;
+
+	protected  final long	freqStartHz;
+	protected  final int	freqStartMHz;
+	
+	protected  final int	freqStopMHz;
+	protected  float[]		spectrum;
+	protected  float		spectrumInitPower;
 	
 	/**
 	 * Inits
@@ -40,38 +46,18 @@ public class DatasetSpectrum implements Cloneable
 		spectrum = new float[datapoints];
 		Arrays.fill(spectrum, spectrumInitPower);
 
-		for (int j = 0; j < 5; j++) {
-			ArrayList<XYDataItem> list	= new ArrayList<>();
-			for (int i = 0; i < datapoints; i++) {
-				double freq = (freqStartHz + fftBinSizeHz * i) / 1000000;
-				list.add(new XYDataItem(freq, 0));
+		if (useCached) {
+			for (int j = 0; j < 5; j++) {
+				ArrayList<XYDataItem> list	= new ArrayList<>();
+				for (int i = 0; i < datapoints; i++) {
+					double freq = (freqStartHz + fftBinSizeHz * i) / 1000000;
+					list.add(new XYDataItem(freq, 0));
+				}
+				cachedDataItems.add(list);
 			}
-			cachedDataItems.add(list);
 		}
 	}
 	
-	@Override protected Object clone() throws CloneNotSupportedException
-	{
-		DatasetSpectrum copy	= (DatasetSpectrum) super.clone();
-		copy.spectrum			= spectrum.clone();
-		return copy;
-	}
-	
-	public DatasetSpectrum cloneMe()
-	{
-		DatasetSpectrum copy;
-		try
-		{
-			copy = (DatasetSpectrum) clone();
-		}
-		catch (CloneNotSupportedException e)
-		{
-			e.printStackTrace();
-			return null;
-		}
-		return copy;
-	}
-
 	/**
 	 * Adds new data to spectrum's dataset
 	 * @param fftBins
@@ -94,7 +80,48 @@ public class DatasetSpectrum implements Cloneable
 
 		return triggerRefresh;
 	}
+	
+	public DatasetSpectrum cloneMe()
+	{
+		DatasetSpectrum copy;
+		try
+		{
+			copy = (DatasetSpectrum) clone();
+		}
+		catch (CloneNotSupportedException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+		return copy;
+	}
 
+	/**
+	 * Copies spectrum to destination dataset
+	 * @param filtered
+	 */
+	public void copyTo(DatasetSpectrum filtered)
+	{
+		System.arraycopy(spectrum, 0, filtered.spectrum, 0, spectrum.length);
+	}
+
+	/**
+	 * Creates {@link XYSeriesImmutable} from spectrum data 
+	 * @param name
+	 * @return
+	 */
+	public XYSeriesImmutable createSpectrumDataset(String name) {
+		float[] xValues	= new float[spectrum.length];
+		float[] yValues	= spectrum;
+		for (int i = 0; i < spectrum.length; i++)
+		{
+			float freq = (freqStartHz + fftBinSizeHz * i) / 1000000f;
+			xValues[i]	= freq;
+		}
+		XYSeriesImmutable xySeriesF	= new XYSeriesImmutable(name, xValues, yValues);
+		return xySeriesF;
+	}
+	
 	/**
 	 * Fills data to {@link XYSeries}, uses x units in MHz
 	 * @param series
@@ -104,36 +131,12 @@ public class DatasetSpectrum implements Cloneable
 		fillToXYSeriesPriv(series, spectrum);
 	}
 
-	protected void fillToXYSeriesPriv(XYSeries series, float[] spectrum){
-		series.clear();
-		/**
-		 * caching decreases GC usage
-		 */
-		boolean useCached	= false;
-		if (!useCached){
-			for (int i = 0; i < spectrum.length; i++)
-			{
-				double freq = (freqStartHz + fftBinSizeHz * i) / 1000000;
-				series.add(freq, spectrum[i]);
-			}
-		}
-		else{
-			ArrayList<XYDataItem> items	= cachedDataItems.get(cachedDataItemsIndex);
-			for (int i = 0; i < spectrum.length; i++)
-			{
-				XYDataItem item	= items.get(i);
-				item.setY(spectrum[i]);
-				series.add(item);
-			}
-			cachedDataItemsIndex	= (cachedDataItemsIndex+1)%cachedDataItems.size();
-		}
-	}
-	
+
 	public float getFFTBinSizeHz()
 	{
 		return fftBinSizeHz;
 	}
-
+	
 	public int getFreqStartMHz()
 	{
 		return freqStartMHz;
@@ -160,13 +163,18 @@ public class DatasetSpectrum implements Cloneable
 		return spectrum[index];
 	}
 
+	public float[] getSpectrumArray()
+	{
+		return spectrum;
+	}
+
 	public void resetSpectrum()
 	{
 		Arrays.fill(spectrum, spectrumInitPower);
 	}
-	public float[] getSpectrumArray()
+	public void setSpectrumInitPower(float spectrumInitPower)
 	{
-		return spectrum;
+		this.spectrumInitPower = spectrumInitPower;
 	}
 	
 	public int spectrumLength()
@@ -174,17 +182,31 @@ public class DatasetSpectrum implements Cloneable
 		return spectrum.length;
 	}
 
-	public void setSpectrumInitPower(float spectrumInitPower)
+	@Override protected Object clone() throws CloneNotSupportedException
 	{
-		this.spectrumInitPower = spectrumInitPower;
+		DatasetSpectrum copy	= (DatasetSpectrum) super.clone();
+		copy.spectrum			= spectrum.clone();
+		return copy;
 	}
 	
-	/**
-	 * Copies spectrum to destination dataset
-	 * @param filtered
-	 */
-	public void copyTo(DatasetSpectrum filtered)
-	{
-		System.arraycopy(spectrum, 0, filtered.spectrum, 0, spectrum.length);
+	protected void fillToXYSeriesPriv(XYSeries series, float[] spectrum){
+		series.clear();
+		if (!useCached){
+			for (int i = 0; i < spectrum.length; i++)
+			{
+				double freq = (freqStartHz + fftBinSizeHz * i) / 1000000;
+				series.add(freq, spectrum[i]);
+			}
+		}
+		else{
+			ArrayList<XYDataItem> items	= cachedDataItems.get(cachedDataItemsIndex);
+			for (int i = 0; i < spectrum.length; i++)
+			{
+				XYDataItem item	= items.get(i);
+				item.setY(spectrum[i]);
+				series.add(item);
+			}
+			cachedDataItemsIndex	= (cachedDataItemsIndex+1)%cachedDataItems.size();
+		}
 	}
 }
