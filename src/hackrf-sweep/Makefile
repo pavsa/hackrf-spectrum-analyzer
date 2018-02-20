@@ -7,6 +7,12 @@ BUILD_PATH 				= obj
 #where the resulting release zip will be copied
 RELEASE_DIR				= ../../release/
 
+JNA_LIB					= lib/hackrf-sweep-jna.jar
+JNA_SWEEP_HEADER		= $(CURDIR)/lib/hackrf/host/hackrf-tools/src/hackrf_sweep.h
+LIBUSB_DIR				= lib/libusb-1.0.21
+MAIN_JAR				= build/lib/hackrf_sweep_spectrum_analyzer.jar
+
+
 ARCH_DEFINED			= n
 ifeq ($(ARCH), x86-64)
 ARCH_DEFINED			= y
@@ -18,7 +24,6 @@ IS_64BIT				= n
 endif
 
 
-
 #SOURCES					= \
 #						lib/hackrf-2017.02.1/host/libhackrf/src/hackrf.c \
 #						lib/hackrf-2017.02.1/host/hackrf-tools/src/hackrf_sweep.c
@@ -27,7 +32,7 @@ SOURCES					= \
 						lib/hackrf/host/libhackrf/src/hackrf.c \
 						lib/hackrf/host/hackrf-tools/src/hackrf_sweep.c
 	
-INCLUDE_PATHS			= -Ilib/hackrf/host/libhackrf/src	 -Ilib/libusb-1.0.20/include/libusb-1.0   
+INCLUDE_PATHS			= -Ilib/hackrf/host/libhackrf/src	 -I$(LIBUSB_DIR)/include/libusb-1.0   
 						 
 						 
 #-Ilib/hackrf-2017.02.1/host/libhackrf/src	
@@ -57,10 +62,10 @@ CC						= gcc
 CXX						= g++
 
 ifeq ($(IS_64BIT), y)
-	LDPATHS					= -L"lib/fftw-3.3.5-dll64" -L"lib/libusb-1.0.20/MinGW64/dll"
+	LDPATHS					= -L"lib/fftw-3.3.5-dll64" -L"$(LIBUSB_DIR)/MinGW64/dll"
 	INCLUDE_PATHS			+= -Ilib/fftw-3.3.5-dll64 
 else
-	LDPATHS					= -L"lib/fftw-3.3.5-dll32" -L"lib/libusb-1.0.20/MinGW32/dll"
+	LDPATHS					= -L"lib/fftw-3.3.5-dll32" -L"$(LIBUSB_DIR)/MinGW32/dll"
 	INCLUDE_PATHS			+= -Ilib/fftw-3.3.5-dll32 
 endif
 
@@ -78,27 +83,25 @@ endif
 #paths
 
 #path to build dlls
-OUTPUT_DIR				= build/lib/$(LIB_DIR)
+OUTPUT_DLL_DIR				= build/lib/$(LIB_DIR)
 
-JNA_LIB					= lib/hackrf-sweep-jna.jar
-JNA_SWEEP_HEADER				= $(CURDIR)/lib/hackrf/host/hackrf-tools/src/hackrf_sweep.h
 
 
 DLL_LIB_PTHREAD			= lib/$(LIB_DIR)/libwinpthread-1.dll
 DLL_JNA					= lib/$(LIB_DIR)/jnidispatch.dll
-DLL_LIB					= $(OUTPUT_DIR)/hackrf-sweep.dll
+DLL_LIB					= $(OUTPUT_DLL_DIR)/hackrf-sweep.dll
 
 ifeq ($(IS_64BIT), y)
 	DLL_LIB_FFTW			= lib/fftw-3.3.5-dll64/libfftw3f-3.dll
-	DLL_LIB_USB				= lib/libusb-1.0.20/MinGW64/dll/libusb-1.0.dll
+	DLL_LIB_USB				= $(LIBUSB_DIR)/MinGW64/dll/libusb-1.0.dll
 else
 	DLL_LIB_FFTW			= lib/fftw-3.3.5-dll32/libfftw3f-3.dll
-	DLL_LIB_USB				= lib/libusb-1.0.20/MinGW32/dll/libusb-1.0.dll
+	DLL_LIB_USB				= $(LIBUSB_DIR)/MinGW32/dll/libusb-1.0.dll
 endif
 
 JNAERATOR				= $(CURDIR)/lib/jnaerator/jnaerator-0.13-20150328.111636-4-shaded.jar
 ZIP_FILE				= hackrf_spectrum_analyzer.zip
-ZIP_FILE_PATH			= $(OUTPUT_DIR)/../../$(ZIP_FILE)
+ZIP_FILE_PATH			= $(OUTPUT_DLL_DIR)/../../$(ZIP_FILE)
 
 
 .NOTPARALLEL: all
@@ -122,16 +125,16 @@ dirs:
 	
 $(ZIP_FILE_PATH): $(DLL_LIB)
 	mkdir -p $(RELEASE_DIR)
-	cd $(OUTPUT_DIR)/../../ && rm -rf $(ZIP_FILE) &&  zip -r $(ZIP_FILE)  *
+	cd $(OUTPUT_DLL_DIR)/../../ && rm -rf $(ZIP_FILE) &&  zip -r $(ZIP_FILE)  *
 	yes | cp -rf $(ZIP_FILE_PATH) $(RELEASE_DIR)
 	#cd $(CURDIR)
 	
 
 .PHONY: prepare
 prepare: dirs $(OBJECTS) $(DLL_LIB_FFTW)
-	mkdir -p $(OUTPUT_DIR)
-	cp -f $(DLL_LIB_FFTW) $(DLL_LIB_PTHREAD) $(DLL_JNA) $(DLL_LIB_USB) $(OUTPUT_DIR)
-	cp -f lib/zadig_2.2.exe lib/program.ico lib/program.png $(OUTPUT_DIR)/../
+	mkdir -p $(OUTPUT_DLL_DIR)
+	cp -f $(DLL_LIB_FFTW) $(DLL_LIB_PTHREAD) $(DLL_JNA) $(DLL_LIB_USB) $(OUTPUT_DLL_DIR)
+	cp -f lib/zadig_2.2.exe lib/program.ico lib/program.png $(OUTPUT_DLL_DIR)/../
 
 $(DLL_LIB):  $(OBJECTS) $(JNA_LIB)
 	echo "building " $(DLL_LIB)
@@ -153,6 +156,6 @@ $(BUILD_PATH)/%.c.$(OBJECT_SUFFIX): %.c
 	
 .PHONY: clean
 clean:
-	rm -f  $(OBJECTS) $(DLL_LIB) #$(JNA_LIB)
-	rm -rf $(OUTPUT_DIR) $(BUILD_PATH)
+	rm -f  $(MAIN_JAR) $(OBJECTS) $(DLL_LIB) #$(JNA_LIB)
+	rm -rf $(OUTPUT_DLL_DIR) $(BUILD_PATH)
 	

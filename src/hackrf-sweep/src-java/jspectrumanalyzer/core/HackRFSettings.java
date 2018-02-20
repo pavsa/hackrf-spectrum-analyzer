@@ -1,78 +1,70 @@
 package jspectrumanalyzer.core;
 
-public interface HackRFSettings
-{
+import java.math.BigDecimal;
+
+import shared.mvc.ModelValue;
+import shared.mvc.ModelValue.ModelValueBoolean;
+import shared.mvc.ModelValue.ModelValueInt;
+
+public interface HackRFSettings {
 	public static abstract class HackRFEventAdapter implements HackRFEventListener {
-		@Override public void captureStateChanged(boolean isCapturing)
-		{
-			
+		@Override
+		public void captureStateChanged(boolean isCapturing) {
+
 		}
-		@Override public void hardwareStatusChanged(boolean hardwareSendingData)
-		{
-			
+
+		@Override
+		public void hardwareStatusChanged(boolean hardwareSendingData) {
+
 		}
 	}
 
-	public static interface HackRFEventListener{
+	public static interface HackRFEventListener {
 		public void captureStateChanged(boolean isCapturing);
+
 		public void hardwareStatusChanged(boolean hardwareSendingData);
 	}
 
-	public int getFFTBinHz();
+	public ModelValueBoolean getAntennaPowerEnable();
 
-	/**
-	 * Get sweep frequency end MHz 
-	 * @return
-	 */
-	public int getFrequencyEnd();
+	public ModelValueInt getFFTBinHz();
 
-	/**
-	 * Get sweep frequency start MHz 
-	 * @return
-	 */
-	public int getFrequencyStart();
+	public ModelValue<FrequencyRange> getFrequency();
 
-	public int getGain();
+	public ModelValueInt getGain();
 
-	public int getLNAGain();
-
-	public int getSamples();
-
-	public int getSpectrumPaletteSize();
-
-	public int getSpectrumPaletteStart();
+	public ModelValueInt getGainLNA();
 	
-	public boolean isSpurRemoval();
+	public ModelValueInt getPersistentDisplayDecayRate();
+	
+	public ModelValueBoolean isDebugDisplay();
 
-	public int getVGAGain();
+	public ModelValueInt getSamples();
 
-	public boolean isCapturing();
+	public ModelValueInt getSpectrumPaletteSize();
+	
+	public ModelValueBoolean isPersistentDisplayVisible();
+	public ModelValueBoolean isWaterfallVisible();
 
-	public boolean isChartsPeaksVisible();
+	public ModelValueInt getSpectrumPaletteStart();
+	
+	public ModelValueInt getPeakFallRate();
+	
+	public ModelValue<FrequencyAllocationTable> getFrequencyAllocationTable();
 
-	public boolean isFilterSpectrum();
+	public ModelValue<BigDecimal> getSpectrumLineThickness();
+	
+	public ModelValueInt getGainVGA();
+
+	public ModelValueBoolean isCapturingPaused();
+
+	public ModelValueBoolean isChartsPeaksVisible();
+
+	public ModelValueBoolean isFilterSpectrum();
+
+	public ModelValueBoolean isSpurRemoval();
 
 	public void registerListener(HackRFEventListener listener);
 
 	public void removeListener(HackRFEventListener listener);
-
-	public void setCapturing(boolean pause);
-
-	public void setChartPeaksVisibility(boolean visible);
-
-	public void setFFTBin(int fftBinHz);
-	
-	public void setFilterSpectrum(boolean filter);
-	
-	public void setFrequency(int freqStartMHz, int freqEndMHz);
-	public void setGain(int gaindB);
-	
-	public void setSamples(int samples);
-	public void setSpectrumPaletteSize(int dB);
-	
-	public void setSpectrumPaletteStart(int dB);
-	public void setSpurRemoval(boolean enable);
-	
-	public void setAntennaPowerEnable(boolean enable);
-	public boolean getAntennaPowerEnable();
 }
