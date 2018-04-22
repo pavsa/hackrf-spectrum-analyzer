@@ -54,7 +54,6 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="cdt.managedbuild.config.gnu.mingw.so.debug.1593016443.987630533" name="jna-min-4.3.0.jar" rcbsApplicability="disable" resourcePath="lib/jna/jna-min-4.3.0.jar" toolsToInvoke=""/>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>

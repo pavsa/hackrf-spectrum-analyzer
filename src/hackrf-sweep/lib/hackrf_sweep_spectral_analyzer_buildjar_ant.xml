@@ -6,13 +6,28 @@
     <property name="dir.buildfile" value="."/>
     <property name="dir.workspace" value=""/>
     <property name="dir.jarfile" value="../build/lib"/>
+    <target name="compile">
+        <mkdir dir="../bin"/>
+    	<copy todir="../bin">
+    	    <fileset dir="../src-java" includes="**/*.csv" />
+    	</copy>
+        <javac srcdir="../src-java" destdir="../bin">
+        	<classpath>
+        	        <pathelement path="../miglayout15-swing.jar"/>
+        			<pathelement path="jcommon-1.0.17.jar"/>
+    	        	<pathelement path="jfreechart-1.0.14.jar"/>
+    	        	<pathelement path="hackrf-sweep-jna.jar"/>
+        			<pathelement path="jna/jna-4.5.1.jar"/>
+    	    </classpath>
+    	</javac>
+    </target>
     <target name="create_run_jar">
         <jar destfile="${dir.jarfile}/hackrf_sweep_spectrum_analyzer.jar">
             <manifest>
                 <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
                 <attribute name="Rsrc-Main-Class" value="jspectrumanalyzer.HackRFSweepSpectrumAnalyzer"/>
                 <attribute name="Class-Path" value="."/>
-                <attribute name="Rsrc-Class-Path" value="./ miglayout15-swing.jar jcommon-1.0.17.jar jfreechart-1.0.14.jar hackrf-sweep-jna.jar jna-min-4.3.0.jar"/>
+                <attribute name="Rsrc-Class-Path" value="./ miglayout15-swing.jar jcommon-1.0.17.jar jfreechart-1.0.14.jar hackrf-sweep-jna.jar jna-4.5.1.jar"/>
             </manifest>
             <zipfileset src="jar-in-jar-loader.zip"/>
             <fileset dir="../bin"/>
@@ -20,7 +35,7 @@
             <zipfileset dir="${dir.buildfile}" includes="jcommon-1.0.17.jar"/>
             <zipfileset dir="${dir.buildfile}" includes="jfreechart-1.0.14.jar"/>
             <zipfileset dir="${dir.buildfile}" includes="hackrf-sweep-jna.jar"/>
-            <zipfileset dir="${dir.buildfile}/jna" includes="jna-min-4.3.0.jar"/>
+            <zipfileset dir="${dir.buildfile}/jna" includes="jna-4.5.1.jar"/>
         </jar>
     </target>
 </project>

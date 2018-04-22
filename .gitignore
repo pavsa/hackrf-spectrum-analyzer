@@ -1,5 +1,4 @@
-/release/*.exe
-/release/lib/
+/release
 /*.webm
 /*.cmd
 /*.exe
