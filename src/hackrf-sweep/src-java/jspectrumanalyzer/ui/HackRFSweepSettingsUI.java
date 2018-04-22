@@ -54,7 +54,7 @@ public class HackRFSweepSettingsUI extends JPanel
 	 */
 	private HackRFSettings hRF;
 	private static final long serialVersionUID = 7721079457485020637L;
-	private JTextField txtHackrfConnected;
+	private JLabel txtHackrfConnected;
 	private FrequencySelectorPanel frequencySelectorStart;
 	private FrequencySelectorPanel frequencySelectorEnd;
 	private JSpinner spinnerFFTBinHz;
@@ -113,12 +113,11 @@ public class HackRFSweepSettingsUI extends JPanel
 		panelMainSettings.add(frequencySelectorEnd, "cell 0 4,grow");
 		
 		
-		txtHackrfConnected = new JTextField();
+		txtHackrfConnected = new JLabel();
 		txtHackrfConnected.setText("HackRF disconnected");
 		txtHackrfConnected.setForeground(Color.WHITE);
 		txtHackrfConnected.setBackground(Color.BLACK);
 		panelMainSettings.add(txtHackrfConnected, "cell 0 23,growx");
-		txtHackrfConnected.setColumns(10);
 		txtHackrfConnected.setBorder(null);
 		
 		btnPause = new JButton("Pause");
