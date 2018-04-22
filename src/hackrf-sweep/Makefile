@@ -43,11 +43,7 @@ endif
 endif
 
 
-ifeq ($(IS_64BIT), y)
-	OBJECT_SUFFIX			= o64
-else
-	OBJECT_SUFFIX			= o
-endif
+OBJECT_SUFFIX			= o
 						 
 OBJECTS					= $(addsuffix .$(OBJECT_SUFFIX), $(addprefix $(BUILD_PATH)/, $(SOURCES))) 						
 
@@ -188,6 +184,7 @@ $(JNA_LIB): $(JNA_SWEEP_HEADER) $(OBJECTS)
 
 $(BUILD_PATH)/%.c.$(OBJECT_SUFFIX): %.c
 	$(CC) $(CFLAGS) $(INCLUDE_PATHS)  $< -o $@
+
 	
 .PHONY: clean
 clean:
