@@ -167,7 +167,7 @@ ifeq ($(IS_WIN),1)
 	cp -f $(DLL_LIB_FFTW) $(DLL_LIB_PTHREAD) $(DLL_LIB_USB) $(OUTPUT_DLL_DIR)
 	cp -f lib/zadig_2.2.exe $(OUTPUT_DLL_DIR)/../
 else
-	echo '#!/bin/bash\nDIRECTORY=`dirname $$0`\njava -jar $$DIRECTORY/lib/hackrf_sweep_spectrum_analyzer.jar' > build/hackrf_sweep_spectrum_analyzer.sh
+	echo -e '#!/bin/bash\nDIRECTORY=`dirname $$0`\njava -jar $$DIRECTORY/lib/hackrf_sweep_spectrum_analyzer.jar' > build/hackrf_sweep_spectrum_analyzer.sh
 	chmod +x build/hackrf_sweep_spectrum_analyzer.sh
 endif
 	
