@@ -3,8 +3,8 @@
 ![screenshot](screenshot.gif "screenshot")
 
 ### Download:
-[Download the latest version](https://github.com/pavsa/hackrf-spectrum-analyzer/releases/download/1.4/hackrf_spectrum_analyzer.zip) (Windows only)
-Linux - read installation below
+Windows: [Download the latest version](https://github.com/pavsa/hackrf-spectrum-analyzer/releases/download/1.4/hackrf_spectrum_analyzer.zip)
+Linux: read Installation section below
 
 ### Features:
 - Optimized for only one purpose - to use HackRF as a spectrum analyzer
@@ -39,11 +39,11 @@ Windows:
 
 Linux (beta - only ubuntu tested):
 1. Needs to be compiled first, so you'll need to install these packages:
-* sudo apt install build-essential ant git libusb-1.0 libfftw3 libfftw3-dev openjdk-8-jdk
-1. git clone --depth=1 --recurse-submodules https://github.com/pavsa/hackrf-spectrum-analyzer.git
-1. cd hackrf-spectrum-analyzer/src/hackrf-sweep/
-1. make 
-1. build/hackrf_sweep_spectrum_analyzer.sh
+`sudo apt install build-essential ant git libusb-1.0 libfftw3 libfftw3-dev openjdk-8-jdk`
+1. `git clone --depth=1 --recurse-submodules https://github.com/pavsa/hackrf-spectrum-analyzer.git`
+1. `cd hackrf-spectrum-analyzer/src/hackrf-sweep/`
+1. `make` 
+1. `build/hackrf_sweep_spectrum_analyzer.sh`
 
 ### Known issues:
 * Spectrum updates stop on parameter change
