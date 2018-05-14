@@ -3,7 +3,7 @@
 ![screenshot](screenshot.gif "screenshot")
 
 ### Download:
-Windows: [Download the latest version](/pavsa/hackrf-spectrum-analyzer/releases)  
+Windows: [Download the latest version](https://github.com/pavsa/hackrf-spectrum-analyzer/releases)  
 Linux: read Installation section below
 
 ### Features:
@@ -28,7 +28,7 @@ Make sure HackRF is using at least the minimum firmware version (see above)
 Windows:
 1. Windows 7+ x64 required 
 1. Install Java JRE 64bit v1.8+
-1. [Download the latest version of Spectrum Analyzer](/pavsa/hackrf-spectrum-analyzer/releases) and unzip
+1. [Download the latest version of Spectrum Analyzer](https://github.com/pavsa/hackrf-spectrum-analyzer/releases) and unzip
 1. Install HackRF as a libusb device
   1. [Download Zadig](src/hackrf-sweep/lib/zadig_2.2.exe) and run  
   2. Goto Options and check List All Devices  
