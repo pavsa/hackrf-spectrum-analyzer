@@ -22,6 +22,7 @@ public class HackRFSweepNativeBridge
 		 */
 		String pathPrefix	= "./"+Platform.RESOURCE_PREFIX+"/";
 		System.setProperty("jna.boot.library.path", pathPrefix);
+		System.setProperty("jna.nosys", "true");
 //		Native.DEBUG_JNA_LOAD	= true;
 //		Native.DEBUG_LOAD	= true;
 		
