@@ -73,6 +73,7 @@ public class HackRFSweepSettingsUI extends JPanel
 	private JComboBox<FrequencyAllocationTable> comboBoxFrequencyAllocationBands;
 	private JSlider sliderGainVGA;
 	private JSlider sliderGainLNA;
+	private JCheckBox chckbxAntennaLNA;
 	private JLabel lblPeakFall;
 	private JComboBox<BigDecimal> comboBoxLineThickness;
 	private JLabel lblPersistentDisplay;
@@ -150,97 +151,111 @@ public class HackRFSweepSettingsUI extends JPanel
 		tabbedPane.setForegroundAt(0, Color.BLACK);
 		tabbedPane.setBackgroundAt(0, Color.WHITE);
 		
-		JLabel lblNewLabel_2 = new JLabel("LNA Gain [dB]");
-		lblNewLabel_2.setForeground(Color.WHITE);
-		tab1.add(lblNewLabel_2, "cell 0 3");
-		
-		sliderGainLNA = new JSlider(SwingConstants.HORIZONTAL, 0, 100, 2);
-		sliderGainLNA.setForeground(Color.WHITE);
-		sliderGainLNA.setFont(new Font("Monospaced", Font.BOLD, 16));
-		sliderGainLNA.setBackground(Color.BLACK);
-		tab1.add(sliderGainLNA, "cell 0 4,growx");
-		
-		JLabel lblVgfaGaindb = new JLabel("VGA Gain [dB]");
-		lblVgfaGaindb.setForeground(Color.WHITE);
-		tab1.add(lblVgfaGaindb, "cell 0 6");
-		
-		sliderGainVGA = new JSlider(SwingConstants.HORIZONTAL, 0, 100, 2);
-		sliderGainVGA.setForeground(Color.WHITE);
-		sliderGainVGA.setFont(new Font("Monospaced", Font.BOLD, 16));
-		sliderGainVGA.setBackground(Color.BLACK);
-		tab1.add(sliderGainVGA, "cell 0 7,growx");
+		//tab1
+		{
+			JLabel lblGain = new JLabel("Gain [dB]");
+			lblGain.setForeground(Color.WHITE);
+			tab1.add(lblGain, "cell 0 0");
 
-		
+			sliderGain = new JSlider(JSlider.HORIZONTAL, 0, 100, 2);
+			sliderGain.setFont(new Font("Monospaced", Font.BOLD, 16));
+			sliderGain.setBackground(Color.BLACK);
+			sliderGain.setForeground(Color.WHITE);
+			tab1.add(sliderGain, "flowy,cell 0 1,growx");
 
-		JLabel lblFftBinhz = new JLabel("FFT Bin [Hz]");
-		lblFftBinhz.setForeground(Color.WHITE);
-		tab1.add(lblFftBinhz, "cell 0 9");
+			JLabel lbl_gainValue = new JLabel(hackRFSettings.getGain() + "dB");
+			lbl_gainValue.setForeground(Color.WHITE);
+			tab1.add(lbl_gainValue, "cell 0 1,alignx right");
 
-		spinnerFFTBinHz = new JSpinner();
-		spinnerFFTBinHz.setFont(new Font("Monospaced", Font.BOLD, 16));
-		spinnerModelFFTBinHz = new SpinnerListModel(new String[] { "1 000", "2 000", "5 000", "10 000", "20 000", 
-				"50 000", "100 000", "200 000", "500 000", "1 000 000", "2 000 000", "5 000 000" });
-		spinnerFFTBinHz.setModel(spinnerModelFFTBinHz);
-		tab1.add(spinnerFFTBinHz, "cell 0 10,growx");
-		((ListEditor) spinnerFFTBinHz.getEditor()).getTextField().setHorizontalAlignment(JTextField.RIGHT);
-		
+			JLabel lblNewLabel_2 = new JLabel("LNA Gain [dB]");
+			lblNewLabel_2.setForeground(Color.WHITE);
+			tab1.add(lblNewLabel_2, "cell 0 3");
+			
+			sliderGainLNA = new JSlider(SwingConstants.HORIZONTAL, 0, 100, 2);
+			sliderGainLNA.setForeground(Color.WHITE);
+			sliderGainLNA.setFont(new Font("Monospaced", Font.BOLD, 16));
+			sliderGainLNA.setBackground(Color.BLACK);
+			tab1.add(sliderGainLNA, "cell 0 4,growx");
+			
+			JLabel lblVgfaGaindb = new JLabel("VGA Gain [dB]");
+			lblVgfaGaindb.setForeground(Color.WHITE);
+			tab1.add(lblVgfaGaindb, "cell 0 6");
+			
+			sliderGainVGA = new JSlider(SwingConstants.HORIZONTAL, 0, 100, 2);
+			sliderGainVGA.setForeground(Color.WHITE);
+			sliderGainVGA.setFont(new Font("Monospaced", Font.BOLD, 16));
+			sliderGainVGA.setBackground(Color.BLACK);
+			tab1.add(sliderGainVGA, "cell 0 7,growx");
 
-		JLabel lblGain = new JLabel("Gain [dB]");
-		lblGain.setForeground(Color.WHITE);
-		tab1.add(lblGain, "cell 0 0");
+			
+			JLabel lblLNAEnable = new JLabel("Antenna LNA +14dB");
+			lblLNAEnable.setForeground(Color.WHITE);
+			tab1.add(lblLNAEnable, "flowx,cell 0 8,growx");
+			
+			chckbxAntennaLNA = new JCheckBox("");
+			chckbxAntennaLNA.setHorizontalTextPosition(SwingConstants.LEADING);
+			chckbxAntennaLNA.setBackground(Color.BLACK);
+			chckbxAntennaLNA.setForeground(Color.WHITE);
+			tab1.add(chckbxAntennaLNA, "cell 0 8,alignx right");
 
-		sliderGain = new JSlider(JSlider.HORIZONTAL, 0, 100, 2);
-		sliderGain.setFont(new Font("Monospaced", Font.BOLD, 16));
-		sliderGain.setBackground(Color.BLACK);
-		sliderGain.setForeground(Color.WHITE);
-		tab1.add(sliderGain, "flowy,cell 0 1,growx");
+			
+			JLabel lblFftBinhz = new JLabel("FFT Bin [Hz]");
+			lblFftBinhz.setForeground(Color.WHITE);
+			tab1.add(lblFftBinhz, "cell 0 10");
 
-		JLabel lbl_gainValue = new JLabel(hackRFSettings.getGain() + "dB");
-		lbl_gainValue.setForeground(Color.WHITE);
-		tab1.add(lbl_gainValue, "cell 0 1,alignx right");
+			spinnerFFTBinHz = new JSpinner();
+			spinnerFFTBinHz.setFont(new Font("Monospaced", Font.BOLD, 16));
+			spinnerModelFFTBinHz = new SpinnerListModel(new String[] { "1 000", "2 000", "5 000", "10 000", "20 000", 
+					"50 000", "100 000", "200 000", "500 000", "1 000 000", "2 000 000", "5 000 000" });
+			spinnerFFTBinHz.setModel(spinnerModelFFTBinHz);
+			tab1.add(spinnerFFTBinHz, "cell 0 12,growx");
+			((ListEditor) spinnerFFTBinHz.getEditor()).getTextField().setHorizontalAlignment(JTextField.RIGHT);
+			
 
-		hackRFSettings.getGain().addListener((gain) -> lbl_gainValue.setText(String.format(" %ddB  [LNA: %ddB  VGA: %ddB]", 
-				gain, hackRFSettings.getGainLNA().getValue(), hackRFSettings.getGainVGA().getValue())));
-		
+			hackRFSettings.getGain().addListener((gain) -> lbl_gainValue.setText(String.format(" %ddB  [LNA: %ddB  VGA: %ddB]", 
+					gain, hackRFSettings.getGainLNA().getValue(), hackRFSettings.getGainVGA().getValue())));
+			
 
-		JLabel lblNumberOfSamples = new JLabel("Number of samples");
-		lblNumberOfSamples.setForeground(Color.WHITE);
-		tab1.add(lblNumberOfSamples, "cell 0 12");
+			JLabel lblNumberOfSamples = new JLabel("Number of samples");
+			lblNumberOfSamples.setForeground(Color.WHITE);
+			tab1.add(lblNumberOfSamples, "cell 0 13");
 
-		spinner_numberOfSamples = new JSpinner();
-		spinner_numberOfSamples.setModel(new SpinnerListModel(new String[] { "8192", "16384", "32768", "65536", "131072", "262144" }));
-		spinner_numberOfSamples.setFont(new Font("Monospaced", Font.BOLD, 16));
-		((ListEditor) spinner_numberOfSamples.getEditor()).getTextField().setHorizontalAlignment(JTextField.RIGHT);
-		((ListEditor) spinner_numberOfSamples.getEditor()).getTextField().setEditable(false);
-		tab1.add(spinner_numberOfSamples, "cell 0 13,growx");
+			spinner_numberOfSamples = new JSpinner();
+			spinner_numberOfSamples.setModel(new SpinnerListModel(new String[] { "8192", "16384", "32768", "65536", "131072", "262144" }));
+			spinner_numberOfSamples.setFont(new Font("Monospaced", Font.BOLD, 16));
+			((ListEditor) spinner_numberOfSamples.getEditor()).getTextField().setHorizontalAlignment(JTextField.RIGHT);
+			((ListEditor) spinner_numberOfSamples.getEditor()).getTextField().setEditable(false);
+			tab1.add(spinner_numberOfSamples, "cell 0 14,growx");
 
-		JButton btnAbout = new JButton("Visit homepage");
-		btnAbout.addActionListener(e -> {
-			 if (Desktop.isDesktopSupported()) {
-		            Desktop desktop = Desktop.getDesktop();
-		            try {
-		                URI uri = new URI(Version.url);
-		                desktop.browse(uri);
-		            } catch (Exception ex) {
-		                ex.printStackTrace();
-		            }
-		    }
-		});
-		
-		Label labelVersion = new Label("Version: v"+Version.version);
-		tab1.add(labelVersion, "flowx,cell 0 17");
-		btnAbout.setBackground(Color.BLACK);
-		tab1.add(btnAbout, "cell 0 17,alignx right");
-		
-		JLabel lblAntennaPower = new JLabel("Antenna power");
-		lblAntennaPower.setForeground(Color.WHITE);
-		tab1.add(lblAntennaPower, "flowx,cell 0 15,growx");
-		
-		chckbxAntennaPower = new JCheckBox("");
-		chckbxAntennaPower.setHorizontalTextPosition(SwingConstants.LEADING);
-		chckbxAntennaPower.setBackground(Color.BLACK);
-		chckbxAntennaPower.setForeground(Color.WHITE);
-		tab1.add(chckbxAntennaPower, "cell 0 15,alignx right");
+			JButton btnAbout = new JButton("Visit homepage");
+			btnAbout.addActionListener(e -> {
+				 if (Desktop.isDesktopSupported()) {
+			            Desktop desktop = Desktop.getDesktop();
+			            try {
+			                URI uri = new URI(Version.url);
+			                desktop.browse(uri);
+			            } catch (Exception ex) {
+			                ex.printStackTrace();
+			            }
+			    }
+			});
+			
+			
+			JLabel lblAntennaPower = new JLabel("Antenna power output");
+			lblAntennaPower.setForeground(Color.WHITE);
+			tab1.add(lblAntennaPower, "flowx,cell 0 16,growx");
+			
+			chckbxAntennaPower = new JCheckBox("");
+			chckbxAntennaPower.setHorizontalTextPosition(SwingConstants.LEADING);
+			chckbxAntennaPower.setBackground(Color.BLACK);
+			chckbxAntennaPower.setForeground(Color.WHITE);
+			tab1.add(chckbxAntennaPower, "cell 0 16,alignx right");
+			
+			Label labelVersion = new Label("Version: v"+Version.version);
+			tab1.add(labelVersion, "flowx,cell 0 17");
+			btnAbout.setBackground(Color.BLACK);
+			tab1.add(btnAbout, "cell 0 17,alignx right");
+		}
 		
 		chckbxFilterSpectrum = new JCheckBox("Filter spectrum");
 		chckbxFilterSpectrum.setBackground(Color.BLACK);
@@ -249,8 +264,6 @@ public class HackRFSweepSettingsUI extends JPanel
 		JLabel lblWaterfallEnabled = new JLabel("Waterfall enabled");
 		lblWaterfallEnabled.setForeground(Color.WHITE);
 		tab2.add(lblWaterfallEnabled, "flowx,cell 0 0,growx");
-
-		
 
 
 		JLabel lblWaterfallPaletteStart = new JLabel("Waterfall palette start [dB]");
@@ -356,7 +369,6 @@ public class HackRFSweepSettingsUI extends JPanel
 		checkBoxDebugDisplay.setBackground(Color.BLACK);
 		tab2.add(checkBoxDebugDisplay, "cell 0 22,alignx right");
 		
-		
 		bindViewToModel();
 	}
 
@@ -375,6 +387,7 @@ public class HackRFSweepSettingsUI extends JPanel
 		new MVCController(sliderGain, hRF.getGain());
 		new MVCController(spinner_numberOfSamples, hRF.getSamples(), val -> Integer.parseInt(val.toString()), val -> val.toString());
 		new MVCController(chckbxAntennaPower, hRF.getAntennaPowerEnable());
+		new MVCController(chckbxAntennaLNA, hRF.getAntennaLNA());
 		new MVCController(slider_waterfallPaletteStart, hRF.getSpectrumPaletteStart());
 		new MVCController(slider_waterfallPaletteSize, hRF.getSpectrumPaletteSize());
 		new MVCController(	(Consumer<FrequencyRange> valueChangedCall) ->  

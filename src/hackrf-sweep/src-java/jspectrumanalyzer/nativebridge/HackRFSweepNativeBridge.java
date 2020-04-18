@@ -33,7 +33,7 @@ public class HackRFSweepNativeBridge
 	}
 
 	public static synchronized void start(HackRFSweepDataCallback dataCallback, int freq_min_MHz, int freq_max_MHz, int fft_bin_width, int num_samples,
-			int lna_gain, int vga_gain, boolean antennaPowerEnable)
+			int lna_gain, int vga_gain, boolean antennaPowerEnable, boolean internalLNA)
 	{
 		hackrf_sweep_lib_start__fft_power_callback_callback callback = new hackrf_sweep_lib_start__fft_power_callback_callback()
 		{
@@ -46,7 +46,7 @@ public class HackRFSweepNativeBridge
 		};
 		Native.setCallbackThreadInitializer(callback, new CallbackThreadInitializer(true));
 
-		HackrfSweepLibrary.hackrf_sweep_lib_start(callback, freq_min_MHz, freq_max_MHz, fft_bin_width, num_samples, lna_gain, vga_gain, antennaPowerEnable ? 1 : 0);
+		HackrfSweepLibrary.hackrf_sweep_lib_start(callback, freq_min_MHz, freq_max_MHz, fft_bin_width, num_samples, lna_gain, vga_gain, antennaPowerEnable ? 1 : 0, internalLNA ? 1 : 0);
 	}
 
 	public static void stop()

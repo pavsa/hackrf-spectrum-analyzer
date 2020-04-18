@@ -212,52 +212,34 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 	private boolean											isChartDrawing						= false;
 	private ReentrantLock							lock								= new ReentrantLock();
 
-	private ModelValueBoolean						parameterAntPower					= new ModelValueBoolean(
-			"Ant power", false);
-	private ModelValueInt							parameterFFTBinHz					= new ModelValueInt(
-			"FFT Bin [Hz]", 100000);
-	private ModelValueBoolean						parameterFilterSpectrum				= new ModelValueBoolean(
-			"Filter", false);
-	private ModelValue<FrequencyRange>				parameterFrequency					= new ModelValue<>(
-			"Frequency range", new FrequencyRange(2400, 2500));
+	private ModelValueBoolean						parameterAntennaLNA   				= new ModelValueBoolean("Antenna LNA +14dB", false);
+	private ModelValueBoolean						parameterAntPower					= new ModelValueBoolean("Ant power", false);
+	private ModelValueInt							parameterFFTBinHz					= new ModelValueInt("FFT Bin [Hz]", 100000);
+	private ModelValueBoolean						parameterFilterSpectrum				= new ModelValueBoolean("Filter", false);
+	private ModelValue<FrequencyRange>				parameterFrequency					= new ModelValue<>("Frequency range", new FrequencyRange(2400, 2500));
+	private ModelValue<FrequencyAllocationTable>	parameterFrequencyAllocationTable	= new ModelValue<FrequencyAllocationTable>("Frequency allocation table", null);
 
-	private ModelValue<FrequencyAllocationTable>	parameterFrequencyAllocationTable	= new ModelValue<FrequencyAllocationTable>(
-			"Frequency allocation table", null);
+	private ModelValueInt							parameterGainLNA					= new ModelValueInt("LNA Gain",0, 8, 0, 40);
+	private ModelValueInt							parameterGainTotal					= new ModelValueInt("Gain [dB]", 40);
+	private ModelValueInt							parameterGainVGA					= new ModelValueInt("VGA Gain", 0, 2, 0, 60);
+	private ModelValueBoolean						parameterIsCapturingPaused			= new ModelValueBoolean("Capturing paused", false);
 
-	private ModelValueInt							parameterGainLNA					= new ModelValueInt("LNA Gain",
-			0, 8, 0, 40);
-	private ModelValueInt							parameterGainTotal					= new ModelValueInt("Gain [dB]",
-			40);
-	private ModelValueInt							parameterGainVGA					= new ModelValueInt("VGA Gain",
-			0, 2, 0, 60);
-	private ModelValueBoolean						parameterIsCapturingPaused			= new ModelValueBoolean(
-			"Capturing paused", false);
+	private ModelValueInt							parameterPersistentDisplayPersTime  = new ModelValueInt("Persistence time", 30, 1, 1, 60);
+	private ModelValueInt							parameterPeakFallRateSecs			= new ModelValueInt("Peak fall rate", 30);
+	private ModelValueBoolean						parameterPersistentDisplay			= new ModelValueBoolean("Persistent display", false);
 
-	private ModelValueInt							parameterPersistentDisplayPersTime 		= new ModelValueInt("Persistence time", 30, 1, 1, 60);
-	private ModelValueInt							parameterPeakFallRateSecs			= new ModelValueInt(
-			"Peak fall rate", 30);
-	private ModelValueBoolean						parameterPersistentDisplay			= new ModelValueBoolean(
-			"Persistent display", false);
+	private ModelValueInt							parameterSamples					= new ModelValueInt("Samples", 8192);
 
-	private ModelValueInt							parameterSamples					= new ModelValueInt("Samples",
-			8192);
-
-	private ModelValueBoolean						parameterShowPeaks					= new ModelValueBoolean(
-			"Show peaks", false);
+	private ModelValueBoolean						parameterShowPeaks					= new ModelValueBoolean("Show peaks", false);
 
 	private ModelValueBoolean 						parameterDebugDisplay				= new ModelValueBoolean("Debug", false);
 	
-	private ModelValue<BigDecimal>					parameterSpectrumLineThickness		= new ModelValue<>(
-			"Spectrum line thickness", new BigDecimal("1"));
-	private ModelValueInt							parameterSpectrumPaletteSize		= new ModelValueInt(
-			"Spectrum palette size", 0);
-	private ModelValueInt							parameterSpectrumPaletteStart		= new ModelValueInt(
-			"Spectrum palette start", 0);
-
-	private ModelValueBoolean						parameterSpurRemoval				= new ModelValueBoolean(
-			"Spur removal", false);
-	private ModelValueBoolean						parameterWaterfallVisible			= new ModelValueBoolean(
-			"Waterfall visible", true);
+	private ModelValue<BigDecimal>					parameterSpectrumLineThickness		= new ModelValue<>("Spectrum line thickness", new BigDecimal("1"));
+	private ModelValueInt							parameterSpectrumPaletteSize		= new ModelValueInt("Spectrum palette size", 0);
+	private ModelValueInt							parameterSpectrumPaletteStart		= new ModelValueInt("Spectrum palette start", 0);
+	private ModelValueBoolean						parameterSpurRemoval				= new ModelValueBoolean("Spur removal", false);
+	private ModelValueBoolean						parameterWaterfallVisible			= new ModelValueBoolean("Waterfall visible", true);
+	
 	private PersistentDisplay						persistentDisplay					= new PersistentDisplay();
 	private float									spectrumInitValue					= -150;
 	private SpurFilter								spurFilter;
@@ -434,6 +416,11 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 		return parameterGainVGA;
 	}
 
+	@Override
+	public ModelValueBoolean getAntennaLNA() {
+		return parameterAntennaLNA;
+	}
+	
 	@Override
 	public ModelValueInt getPeakFallRate() {
 		return parameterPeakFallRateSecs;
@@ -1058,6 +1045,7 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 		Runnable restartHackrf = this::restartHackrfSweep;
 		parameterFrequency.addListener(restartHackrf);
 		parameterAntPower.addListener(restartHackrf);
+		parameterAntennaLNA.addListener(restartHackrf);
 		parameterFFTBinHz.addListener(restartHackrf);
 		parameterSamples.addListener(restartHackrf);
 		parameterIsCapturingPaused.addListener(this::fireCapturingStateChanged);
@@ -1244,11 +1232,11 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 						"Starting hackrf_sweep... " + getFreq().getStartMHz() + "-" + getFreq().getEndMHz() + "MHz ");
 				System.out.println("hackrf_sweep params:  freq " + getFreq().getStartMHz() + "-" + getFreq().getEndMHz()
 						+ "MHz  FFTBin " + parameterFFTBinHz.getValue() + "Hz  samples " + parameterSamples.getValue()
-						+ "  lna: " + parameterGainLNA.getValue() + " vga: " + parameterGainVGA.getValue());
+						+ "  lna: " + parameterGainLNA.getValue() + " vga: " + parameterGainVGA.getValue() + " antenna_lna: "+parameterAntennaLNA.getValue());
 				fireHardwareStateChanged(false);
 				HackRFSweepNativeBridge.start(this, getFreq().getStartMHz(), getFreq().getEndMHz(),
 						parameterFFTBinHz.getValue(), parameterSamples.getValue(), parameterGainLNA.getValue(),
-						parameterGainVGA.getValue(), parameterAntPower.getValue());
+						parameterGainVGA.getValue(), parameterAntPower.getValue(), parameterAntennaLNA.getValue());
 				fireHardwareStateChanged(false);
 				if (forceStopSweep == false) {
 					Thread.sleep(1000);

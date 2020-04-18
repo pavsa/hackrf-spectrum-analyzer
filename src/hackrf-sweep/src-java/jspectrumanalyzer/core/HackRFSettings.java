@@ -35,6 +35,8 @@ public interface HackRFSettings {
 
 	public ModelValueInt getGainLNA();
 	
+	public ModelValueBoolean getAntennaLNA();
+	
 	public ModelValueInt getPersistentDisplayDecayRate();
 	
 	public ModelValueBoolean isDebugDisplay();

@@ -1,0 +1,62 @@
+language: c
+
+cache: apt
+
+sudo: false
+dist: trusty
+
+os:
+  - linux
+  - osx
+
+compiler:
+  - gcc
+  - clang
+
+matrix:
+  exclude:
+    - os: osx
+      compiler: gcc
+    - os: linux
+      compiler: clang
+
+before_script:
+  - export CFLAGS="-Wall -Wextra -Werror"
+
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew tap PX4/homebrew-px4; brew update; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libusb fftw gcc-arm-none-eabi dfu-util; fi
+  # For virtualenv(?) reasons we can't apt-get install python-yaml
+  - pip install PyYAML
+
+script:
+  - mkdir host/build
+  - cd host/build
+  - cmake ..
+  - make
+  - cd ../..
+  - mkdir firmware/build-hackrf-one
+  - mkdir firmware/build-jawbreaker
+  - mkdir firmware/build-rad1o
+  - cd firmware/libopencm3
+  - make
+  - cd ../build-hackrf-one
+  - cmake ..
+  - make
+  - cd ../build-jawbreaker
+  - cmake -DBOARD=JAWBREAKER ..
+  - make
+  - cd ../build-rad1o
+  - cmake -DBOARD=RAD1O ..
+  - make
+
+addons:
+  apt:
+    sources:
+      - debian-sid
+    packages:
+      - libusb-1.0-0-dev
+      - libfftw3-dev
+      - gcc-arm-none-eabi
+      - libnewlib-arm-none-eabi
+      - dfu-util

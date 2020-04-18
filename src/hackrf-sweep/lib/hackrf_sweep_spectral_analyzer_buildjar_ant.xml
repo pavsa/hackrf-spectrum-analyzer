@@ -16,7 +16,6 @@
         	        <pathelement path="../miglayout15-swing.jar"/>
         			<pathelement path="jcommon-1.0.17.jar"/>
     	        	<pathelement path="jfreechart-1.0.14.jar"/>
-    	        	<pathelement path="hackrf-sweep-jna.jar"/>
         			<pathelement path="jna/jna-4.5.1.jar"/>
     	    </classpath>
     	</javac>
@@ -27,14 +26,13 @@
                 <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
                 <attribute name="Rsrc-Main-Class" value="jspectrumanalyzer.HackRFSweepSpectrumAnalyzer"/>
                 <attribute name="Class-Path" value="."/>
-                <attribute name="Rsrc-Class-Path" value="./ miglayout15-swing.jar jcommon-1.0.17.jar jfreechart-1.0.14.jar hackrf-sweep-jna.jar jna-4.5.1.jar"/>
+                <attribute name="Rsrc-Class-Path" value="./ miglayout15-swing.jar jcommon-1.0.17.jar jfreechart-1.0.14.jar jna-4.5.1.jar"/>
             </manifest>
             <zipfileset src="jar-in-jar-loader.zip"/>
             <fileset dir="../bin"/>
             <zipfileset dir="../" includes="miglayout15-swing.jar"/>
             <zipfileset dir="${dir.buildfile}" includes="jcommon-1.0.17.jar"/>
             <zipfileset dir="${dir.buildfile}" includes="jfreechart-1.0.14.jar"/>
-            <zipfileset dir="${dir.buildfile}" includes="hackrf-sweep-jna.jar"/>
             <zipfileset dir="${dir.buildfile}/jna" includes="jna-4.5.1.jar"/>
         </jar>
     </target>
