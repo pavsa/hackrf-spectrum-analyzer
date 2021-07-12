@@ -17,10 +17,10 @@ Linux: read Installation section below
 - hackrf_sweep integrated as a shared library
 
 ### Requirements:
-* HackRF One with [Firmware 2017.02.1](https://github.com/mossmann/hackrf/releases/tag/v2017.02.1) or newer (use linux inside virtual machine to [update the firmware](https://github.com/mossmann/hackrf/wiki/Updating-Firmware)) 
+* HackRF One with firmware version [2017.02.1](https://github.com/mossmann/hackrf/releases/tag/v2017.02.1) up to version [2018.01.1](https://github.com/mossmann/hackrf/releases/tag/v2018.01.1). **Not compatible with firmware version 2021.03.1** (use linux inside virtual machine to [update the firmware](https://github.com/mossmann/hackrf/wiki/Updating-Firmware)) 
 
 ### Installation:
-Make sure HackRF is using at least the minimum firmware version (see above) 
+Make sure HackRF is using at least the minimum firmware version **and not the version 2021.03.1** (see above) 
 
 Windows:  
 1. Windows 7+ x64 required 
