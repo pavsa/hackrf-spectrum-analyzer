@@ -41,7 +41,9 @@ CXX_WIN						= x86_64-w64-mingw32-g++
 
 ifeq ($(IS_RELEASE), y)
 	CFLAGS 					+= -fdata-sections -ffunction-sections -O2
-	LDFLAGS					+= -Wl,--gc-sections #-s 
+	# LDFLAGS					+= -Wl,--gc-sections #-s
+	LDFLAGS					+=  -dynamiclib -Wl,-dead_strip #-s
+
 else
 	CFLAGS 					+= -O0 -g #-O2
 	LDFLAGS					+= -g 
@@ -51,7 +53,7 @@ LDPATHS_STATIC				= -L""
 
 #paths
 #path to build dlls
-OUTPUT_DLL_DIR	    		= $(OUTPUT_PATH)/lib/linux-x86-64
+OUTPUT_DLL_DIR	    		= $(OUTPUT_PATH)/lib/darwin
 OUTPUT_DLL_DIR_WIN	     	= $(OUTPUT_PATH)/lib/win32-x86-64
 
 # Windows build setup
@@ -68,10 +70,10 @@ LDFLAGS_WIN					+= -Wl,--kill-at  -static-libgcc -static-libstdc++ -shared
 ANT_PATH					= ""
 #required installed libraries for linux: openjdk-8 or newer, libfftw3, libusb-1.0 
 JDK_EXECUTABLE				= java #required to generate jna wrapper
-DLL_LIB						= $(OUTPUT_DLL_DIR)/libhackrf-sweep.so
+DLL_LIB						= $(OUTPUT_DLL_DIR)/libhackrf-sweep.dylib
 LDLIBS						= -lusb-1.0 -lfftw3 -lfftw3f
 CFLAGS						+= -march=x86-64
-LIB_DIR						= linux-x86-64
+LIB_DIR						= darwin
 
 JNAERATOR					= $(CURDIR)/lib/jnaerator/jnaerator-0.13-20150328.111636-4-shaded.jar
 ZIP_FILE					= hackrf_spectrum_analyzer.zip
@@ -127,7 +129,7 @@ $(DLL_LIB_WIN): $(OBJECTS_WIN)
 $(DLL_LIB):  $(OBJECTS)
 	echo "---- Building linux version [start] ----"	
 	$(CXX) $(LDFLAGS) $(LDPATHS) $(OBJECTS) -o $(DLL_LIB) $(LDLIBS)
-	strip --strip-unneeded $(DLL_LIB)
+	# strip $(DLL_LIB)
 	echo "---- Building linux version [done ] ----"
 
 $(BUILD_PATH)/%.c.$(OBJECT_SUFFIX): %.c
