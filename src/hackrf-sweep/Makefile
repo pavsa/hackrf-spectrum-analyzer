@@ -105,9 +105,11 @@ $(ZIP_FILE_PATH): $(DLL_LIB) $(DLL_LIB_WIN)
 prepare: dirs $(OBJECTS) $(OBJECTS_WIN) $(DLL_LIB_FFTW)
 	mkdir -p $(OUTPUT_DLL_DIR) $(OUTPUT_DLL_DIR_WIN)	
 	cp -f lib/program.ico lib/program.png $(OUTPUT_DLL_DIR)/../
-	cp lib/launchers/hackrf_sweep_spectrum_analyzer_unix.sh $(OUTPUT_PATH)
+	cp lib/launchers/hackrf_sweep_spectrum_analyzer_linux.sh $(OUTPUT_PATH)
+	cp lib/launchers/hackrf_sweep_spectrum_analyzer_darwin.sh $(OUTPUT_PATH)
 	cp lib/launchers/hackrf_sweep_spectrum_analyzer_windows.cmd $(OUTPUT_PATH)
-	chmod +x $(OUTPUT_PATH)/hackrf_sweep_spectrum_analyzer_unix.sh
+	chmod +x $(OUTPUT_PATH)/hackrf_sweep_spectrum_analyzer_linux.sh
+	chmod +x $(OUTPUT_PATH)/hackrf_sweep_spectrum_analyzer_darwin.sh
 	cp -f $(DLL_LIB_FFTW) $(DLL_LIB_PTHREAD) $(DLL_LIB_USB) $(OUTPUT_DLL_DIR_WIN)
 	cp -f lib/zadig-2.5.exe $(OUTPUT_DLL_DIR_WIN)/../
 

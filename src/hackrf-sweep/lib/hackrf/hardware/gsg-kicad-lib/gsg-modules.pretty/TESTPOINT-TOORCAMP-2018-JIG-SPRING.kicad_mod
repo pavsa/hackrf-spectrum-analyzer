@@ -1,0 +1,11 @@
+(module TESTPOINT-TOORCAMP-2018-JIG-SPRING (layer F.Cu) (tedit 5B214AF9)
+  (attr virtual)
+  (fp_text reference REF** (at 27 0 90) (layer F.SilkS) hide
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (fp_text value TESTPOINT-TOORCAMP-2018-JIG-SPRING (at 31 0 90) (layer F.Fab)
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (pad 1 smd rect (at 32.375 0) (size 2.2 5) (layers F.Cu F.Paste F.Mask))
+  (pad 2 smd rect (at 29.875 0) (size 2.2 5) (layers F.Cu F.Paste F.Mask))
+)

@@ -28,7 +28,7 @@ extern "C"
 #endif
 
 #include <stdint.h>
-#include "i2c_bus.h"
+#include <stdbool.h>
 
 #define OPERACAKE_PA1 0
 #define OPERACAKE_PA2 1
@@ -40,11 +40,17 @@ extern "C"
 #define OPERACAKE_PB3 6
 #define OPERACAKE_PB4 7
 
-/* Up to 8 Operacake boards can be used with one HackRF */
-extern uint8_t operacake_boards[8];
+#define MAX_OPERACAKE_RANGES 8
 
-uint8_t operacake_init(void);
+uint8_t operacake_init(bool allow_gpio);
+bool operacake_is_board_present(uint8_t address);
+void operacake_get_boards(uint8_t *addresses);
+void operacake_set_mode(uint8_t address, uint8_t mode);
+uint8_t operacake_get_mode(uint8_t address);
 uint8_t operacake_set_ports(uint8_t address, uint8_t PA, uint8_t PB);
+uint8_t operacake_add_range(uint16_t freq_min, uint16_t freq_max, uint8_t port);
+uint8_t operacake_set_range(uint32_t freq_mhz);
+uint16_t gpio_test(uint8_t address);
 
 #ifdef __cplusplus
 }

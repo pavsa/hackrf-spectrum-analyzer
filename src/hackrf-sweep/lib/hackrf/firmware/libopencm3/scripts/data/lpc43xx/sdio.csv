@@ -1,0 +1,150 @@
+SDIO_CTRL,0,1,CONTROLLER_RESET,Controller reset,0,rw
+SDIO_CTRL,1,1,FIFO_RESET,FIFO reset,0,rw
+SDIO_CTRL,2,1,DMA_RESET,DMA reset,0,rw
+SDIO_CTRL,4,1,INT_ENABLE,Global interrupt enable/disable,0,rw
+SDIO_CTRL,6,1,READ_WAIT,Read/wait send,0,rw
+SDIO_CTRL,7,1,SEND_IRQ_RESPONSE,Send IRQ response,0,rw
+SDIO_CTRL,8,1,ABORT_READ_DATA,Abort read data,0,rw
+SDIO_CTRL,9,1,SEND_CCSD,Send CCSD,0,rw
+SDIO_CTRL,10,1,SEND_AUTO_STOP_CCSD,Send auto stop CCSD,0,rw
+SDIO_CTRL,11,1,CEATA_DEVICE_INTERRUPT_STATUS,CEATA device interrupt status,0,rw
+SDIO_CTRL,16,1,CARD_VOLTAGE_A0,SD_VOLT0 pin control,0,rw
+SDIO_CTRL,17,1,CARD_VOLTAGE_A1,SD_VOLT1 pin control,0,rw
+SDIO_CTRL,18,1,CARD_VOLTAGE_A2,SD_VOLT2 pin control,0,rw
+SDIO_CTRL,25,1,USE_INTERNAL_DMAC,SD/MMC DMA use,0,rw
+SDIO_PWREN,0,1,POWER_ENABLE,Power on/off switch for card,0,rw
+SDIO_CLKDIV,0,8,CLK_DIVIDER0,Clock divider-0 value,0,rw
+SDIO_CLKDIV,8,8,CLK_DIVIDER1,Clock divider-1 value,0,rw
+SDIO_CLKDIV,16,8,CLK_DIVIDER2,Clock divider-2 value,0,rw
+SDIO_CLKDIV,24,8,CLK_DIVIDER3,Clock divider-3 value,0,rw
+SDIO_CLKSRC,0,2,CLK_SOURCE,Clock divider source for SD card,0,rw
+SDIO_CLKENA,0,1,CCLK_ENABLE,Clock-enable control for SD card clock,0,rw
+SDIO_CLKENA,16,1,CCLK_LOW_POWER,Low-power control for SD card clock,0,rw
+SDIO_TMOUT,0,8,RESPONSE_TIMEOUT,Response time-out value,0x40,rw
+SDIO_TMOUT,8,24,DATA_TIMEOUT,Value for card data read time-out,0xffffff,rw
+SDIO_CTYPE,0,1,CARD_WIDTH0,Indicates if card is 1-bit or 4-bit,0,rw
+SDIO_CTYPE,16,1,CARD_WIDTH1,Indicates if card is 8-bit,0,rw
+SDIO_BLKSIZ,0,16,BLOCK_SIZE,Block size,0x200,rw
+SDIO_BYTCNT,0,32,BYTE_COUNT,Number of bytes to be transferred,0x200,rw
+SDIO_INTMASK,0,1,CDET,Card detect,0,rw
+SDIO_INTMASK,1,1,RE,Response error,0,rw
+SDIO_INTMASK,2,1,CDONE,Command done,0,rw
+SDIO_INTMASK,3,1,DTO,Data transfer over,0,rw
+SDIO_INTMASK,4,1,TXDR,Transmit FIFO data request,0,rw
+SDIO_INTMASK,5,1,RXDR,Receive FIFO data request,0,rw
+SDIO_INTMASK,6,1,RCRC,Response CRC error,0,rw
+SDIO_INTMASK,7,1,DCRC,Data CRC error,0,rw
+SDIO_INTMASK,8,1,RTO,Response time-out,0,rw
+SDIO_INTMASK,9,1,DRTO,Data read time-out,0,rw
+SDIO_INTMASK,10,1,HTO,Data starvation-by-host time-out/volt_switch_int,0,rw
+SDIO_INTMASK,11,1,FRUN,FIFO underrun/overrun error,0,rw
+SDIO_INTMASK,12,1,HLE,Hardware locked write error,0,rw
+SDIO_INTMASK,13,1,SBE,Start-bit error,0,rw
+SDIO_INTMASK,14,1,ACD,Auto command done,0,rw
+SDIO_INTMASK,15,1,EBE,End-bit error (read)/Write no CRC,0,rw
+SDIO_INTMASK,16,1,SDIO_INT_MASK,Mask SDIO interrupt,0,rw
+SDIO_CMDARG,0,32,CMD_ARG,Value indicates command argument to be passed to card,0,rw
+SDIO_CMD,0,6,CMD_INDEX,Command index,0,rw
+SDIO_CMD,6,1,RESPONSE_EXPECT,Response expect,0,rw
+SDIO_CMD,7,1,RESPONSE_LENGTH,Response length,0,rw
+SDIO_CMD,8,1,CHECK_RESPONSE_CRC,Check response CRC,0,rw
+SDIO_CMD,9,1,DATA_EXPECTED,Data expected,0,rw
+SDIO_CMD,10,1,READ_WRITE,Read/write,0,rw
+SDIO_CMD,11,1,TRANSFER_MODE,Transfer mode,0,rw
+SDIO_CMD,12,1,SEND_AUTO_STOP,Send auto stop,0,rw
+SDIO_CMD,13,1,WAIT_PRVDATA_COMPLETE,Wait prvdata complete,0,rw
+SDIO_CMD,14,1,STOP_ABORT_CMD,Stop abort command,0,rw
+SDIO_CMD,15,1,SEND_INITIALIZATION,Send initialization,0,rw
+SDIO_CMD,21,1,UPDATE_CLOCK_REGISTERS_ONLY,Update clock registers only,0,rw
+SDIO_CMD,22,1,READ_CEATA_DEVICE,Read CEATA device,0,rw
+SDIO_CMD,23,1,CCS_EXPECTED,CCS expected,0,rw
+SDIO_CMD,24,1,ENABLE_BOOT,Enable boot,0,rw
+SDIO_CMD,25,1,EXPECT_BOOT_ACK,Expect boot acknowledge,0,rw
+SDIO_CMD,26,1,DISABLE_BOOT,Disable boot,0,rw
+SDIO_CMD,27,1,BOOT_MODE,Boot mode,0,rw
+SDIO_CMD,28,1,VOLT_SWITCH,Voltage switch bit,0,rw
+SDIO_CMD,31,1,START_CMD,Start command,0,rw
+SDIO_RESP0,0,32,RESPONSE0,Bit[31:0] of response,0,rw
+SDIO_RESP1,0,32,RESPONSE1,Bit[63:32] of long response,0,rw
+SDIO_RESP2,0,32,RESPONSE2,Bit[95:64] of long response,0,rw
+SDIO_RESP3,0,32,RESPONSE3,Bit[127:96] of long response,0,rw
+SDIO_MINTSTS,0,1,CDET,Card detect,0,rw
+SDIO_MINTSTS,1,1,RE,Response error,0,rw
+SDIO_MINTSTS,2,1,CDONE,Command done,0,rw
+SDIO_MINTSTS,3,1,DTO,Data transfer over,0,rw
+SDIO_MINTSTS,4,1,TXDR,Transmit FIFO data request,0,rw
+SDIO_MINTSTS,5,1,RXDR,Receive FIFO data request,0,rw
+SDIO_MINTSTS,6,1,RCRC,Response CRC error,0,rw
+SDIO_MINTSTS,7,1,DCRC,Data CRC error,0,rw
+SDIO_MINTSTS,8,1,RTO,Response time-out,0,rw
+SDIO_MINTSTS,9,1,DRTO,Data read time-out,0,rw
+SDIO_MINTSTS,10,1,HTO,Data starvation-by-host time-out,0,rw
+SDIO_MINTSTS,11,1,FRUN,FIFO underrun/overrun error,0,rw
+SDIO_MINTSTS,12,1,HLE,Hardware locked write error,0,rw
+SDIO_MINTSTS,13,1,SBE,Start-bit error,0,rw
+SDIO_MINTSTS,14,1,ACD,Auto command done,0,rw
+SDIO_MINTSTS,15,1,EBE,End-bit error (read)/write no CRC,0,rw
+SDIO_MINTSTS,16,1,SDIO_INTERRUPT,Interrupt from SDIO card,0,rw
+SDIO_RINTSTS,0,1,CDET,Card detect,0,rw
+SDIO_RINTSTS,1,1,RE,Response error,0,rw
+SDIO_RINTSTS,2,1,CDONE,Command done,0,rw
+SDIO_RINTSTS,3,1,DTO,Data transfer over,0,rw
+SDIO_RINTSTS,4,1,TXDR,Transmit FIFO data request,0,rw
+SDIO_RINTSTS,5,1,RXDR,Receive FIFO data request,0,rw
+SDIO_RINTSTS,6,1,RCRC,Response CRC error,0,rw
+SDIO_RINTSTS,7,1,DCRC,Data CRC error,0,rw
+SDIO_RINTSTS,8,1,RTO_BAR,Response time-out (RTO)/boot ack received (BAR),0,rw
+SDIO_RINTSTS,9,1,DRTO_BDS,Data read time-out (DRTO)/boot data start (BDS),0,rw
+SDIO_RINTSTS,10,1,HTO,Data starvation-by-host time-out,0,rw
+SDIO_RINTSTS,11,1,FRUN,FIFO underrun/overrun error,0,rw
+SDIO_RINTSTS,12,1,HLE,Hardware locked write error,0,rw
+SDIO_RINTSTS,13,1,SBE,Start-bit error,0,rw
+SDIO_RINTSTS,14,1,ACD,Auto command done,0,rw
+SDIO_RINTSTS,15,1,EBE,End-bit error (read)/write no CRC,0,rw
+SDIO_RINTSTS,16,1,SDIO_INTERRUPT,Interrupt from SDIO card,0,rw
+SDIO_STATUS,0,1,FIFO_RX_WATERMARK,FIFO reached receive watermark level,0,rw
+SDIO_STATUS,1,1,FIFO_TX_WATERMARK,FIFO reached transmit watermark level,1,rw
+SDIO_STATUS,2,1,FIFO_EMPTY,FIFO is empty,1,rw
+SDIO_STATUS,3,1,FIFO_FULL,FIFO is full,0,rw
+SDIO_STATUS,4,4,CMDFSMSTATES,Command FSM states,0,rw
+SDIO_STATUS,8,1,DATA_3_STATUS,Raw selected card_data[3],,rw
+SDIO_STATUS,9,1,DATA_BUSY,Inverted version of raw selected card_data[0],,rw
+SDIO_STATUS,10,1,DATA_STATE_MC_BUSY,Data transmit or receive state-machine is busy,1,rw
+SDIO_STATUS,11,6,RESPONSE_INDEX,Index of previous response,0,rw
+SDIO_STATUS,17,13,FIFO_COUNT,Number of filled locations in FIFO,0,rw
+SDIO_STATUS,30,1,DMA_ACK,DMA acknowledge signal,0,rw
+SDIO_STATUS,31,1,DMA_REQ,DMA request signal,0,rw
+SDIO_FIFOTH,0,12,TX_WMARK,FIFO threshold watermark level when transmitting data to card,0,rw
+SDIO_FIFOTH,16,12,RX_WMARK,FIFO threshold watermark level when receiving data from card,0x1f,rw
+SDIO_FIFOTH,28,3,DMA_MTS,Burst size of multiple transaction,0,rw
+SDIO_CDETECT,0,1,CARD_DETECT,Card detect - 0 represents presence of card,0,rw
+SDIO_WRTPRT,0,1,WRITE_PROTECT,Write protect - 1 represents write protection,0,rw
+SDIO_TCBCNT,0,32,TRANS_CARD_BYTE_COUNT,Number of bytes transferred by CIU unit to card,0,rw
+SDIO_TBBCNT,0,32,TRANS_FIFO_BYTE_COUNT,Number of bytes transferred between host/DMA memory and BIU FIFO,0,rw
+SDIO_DEBNCE,0,24,DEBOUNCE_COUNT,Number of host clocks used by debounce filter logic for card detect,0xffffff,rw
+SDIO_RST_N,0,1,CARD_RESET,Hardware reset,1,rw
+SDIO_BMOD,0,1,SWR,Software reset,0,rw
+SDIO_BMOD,1,1,FB,Fixed burst,0,rw
+SDIO_BMOD,2,5,DSL,Descriptor skip length,0,rw
+SDIO_BMOD,7,1,DE,SD/MMC DMA enable,0,rw
+SDIO_BMOD,8,3,PBL,Programmable burst length,0,rw
+SDIO_PLDMND,0,32,PD,Poll demand,,rw
+SDIO_DBADDR,0,32,SDL,Start of descriptor list,0,rw
+SDIO_IDSTS,0,1,TI,Transmit interrupt,0,rw
+SDIO_IDSTS,1,1,RI,Receive interrupt,0,rw
+SDIO_IDSTS,2,1,FBE,Fatal bus error interrupt,0,rw
+SDIO_IDSTS,4,1,DU,Descriptor unavailable interrupt,0,rw
+SDIO_IDSTS,5,1,CES,Card error summary,0,rw
+SDIO_IDSTS,8,1,NIS,Normal interrupt summary,0,rw
+SDIO_IDSTS,9,1,AIS,Abnormal interrupt summary,0,rw
+SDIO_IDSTS,10,3,EB,Error bits,0,rw
+SDIO_IDSTS,13,4,FSM,DMAC state machine present state,0,rw
+SDIO_IDINTEN,0,1,TI,Transmit interrupt enable,0,rw
+SDIO_IDINTEN,1,1,RI,Receive interrupt enable,0,rw
+SDIO_IDINTEN,2,1,FBE,Fatal bus error enable,0,rw
+SDIO_IDINTEN,4,1,DU,Descriptor unavailable interrupt,0,rw
+SDIO_IDINTEN,5,1,CES,Card error summary interrupt,0,rw
+SDIO_IDINTEN,8,1,NIS,Normal interrupt summary enable,0,rw
+SDIO_IDINTEN,9,1,AIS,Abnormal interrupt summary enable,0,rw
+SDIO_DSCADDR,0,32,HDA,Host descriptor address pointer,0,rw
+SDIO_BUFADDR,0,32,HBA,Host buffer address pointer,0,rw

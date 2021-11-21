@@ -50,6 +50,10 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 #define SAMPLES_PER_BLOCK 8192
 #define BYTES_PER_BLOCK 16384
 #define MAX_SWEEP_RANGES 10
+#define HACKRF_OPERACAKE_ADDRESS_INVALID 0xFF
+#define HACKRF_OPERACAKE_MAX_BOARDS 8
+#define HACKRF_OPERACAKE_MAX_DWELL_TIMES 16
+#define HACKRF_OPERACAKE_MAX_FREQ_RANGES 8
 
 enum hackrf_error {
 	HACKRF_SUCCESS = 0,
@@ -64,6 +68,7 @@ enum hackrf_error {
 	HACKRF_ERROR_STREAMING_STOPPED = -1003,
 	HACKRF_ERROR_STREAMING_EXIT_CALLED = -1004,
 	HACKRF_ERROR_USB_API_VERSION = -1005,
+	HACKRF_ERROR_NOT_LAST_DEVICE = -2000,
 	HACKRF_ERROR_OTHER = -9999,
 };
 
@@ -99,6 +104,21 @@ enum operacake_ports {
 	OPERACAKE_PB4 = 7,
 };
 
+enum operacake_switching_mode {
+	/**
+	 * Port connections are set manually using @ref hackrf_set_operacake_ports.
+	 */
+	OPERACAKE_MODE_MANUAL,
+	/**
+	 * Port connections are switched automatically when the frequency is changed. Frequency ranges can be set using @ref hackrf_set_operacake_ranges.
+	 */
+	OPERACAKE_MODE_FREQUENCY,
+	/**
+	 * Port connections are switched automatically over time.
+	 */
+	OPERACAKE_MODE_TIME,
+};
+
 enum sweep_style {
 	LINEAR = 0,
 	INTERLEAVED = 1,
@@ -106,13 +126,17 @@ enum sweep_style {
 
 typedef struct hackrf_device hackrf_device;
 
+/**
+ * USB transfer information passed to RX or TX callback.
+ * A callback should treat all these fields as read-only except that a TX callback should write to the data buffer.
+ */
 typedef struct {
-	hackrf_device* device;
-	uint8_t* buffer;
-	int buffer_length;
-	int valid_length;
-	void* rx_ctx;
-	void* tx_ctx;
+	hackrf_device* device; /**< HackRF USB device for this transfer */
+	uint8_t* buffer;       /**< transfer data buffer */
+	int buffer_length;     /**< length of data buffer in bytes */
+	int valid_length;      /**< number of buffer bytes that were transferred */
+	void* rx_ctx;          /**< RX libusb context */
+	void* tx_ctx;          /**< TX libusb context */
 } hackrf_transfer;
 
 typedef struct {
@@ -120,6 +144,16 @@ typedef struct {
 	uint32_t serial_no[4];
 } read_partid_serialno_t;
 
+typedef struct {
+	uint32_t dwell;
+	uint8_t port;
+} hackrf_operacake_dwell_time;
+
+typedef struct {
+	uint16_t freq_min;
+	uint16_t freq_max;
+	uint8_t port;
+} hackrf_operacake_freq_range;
 
 struct hackrf_device_list {
 	char **serial_numbers;
@@ -176,6 +210,8 @@ extern ADDAPI int ADDCALL hackrf_rffc5071_write(hackrf_device* device, uint8_t r
 extern ADDAPI int ADDCALL hackrf_spiflash_erase(hackrf_device* device);
 extern ADDAPI int ADDCALL hackrf_spiflash_write(hackrf_device* device, const uint32_t address, const uint16_t length, unsigned char* const data);
 extern ADDAPI int ADDCALL hackrf_spiflash_read(hackrf_device* device, const uint32_t address, const uint16_t length, unsigned char* data);
+extern ADDAPI int ADDCALL hackrf_spiflash_status(hackrf_device* device, uint8_t* data);
+extern ADDAPI int ADDCALL hackrf_spiflash_clear_status(hackrf_device* device);
 
 /* device will need to be reset after hackrf_cpld_write */
 extern ADDAPI int ADDCALL hackrf_cpld_write(hackrf_device* device,
@@ -190,8 +226,7 @@ extern ADDAPI int ADDCALL hackrf_set_freq_explicit(hackrf_device* device,
 		const uint64_t if_freq_hz, const uint64_t lo_freq_hz,
 		const enum rf_path_filter path);
 
-/* currently 8-20Mhz - either as a fraction, i.e. freq 20000000hz divider 2 -> 10Mhz or as plain old 10000000hz (double)
-	preferred rates are 8, 10, 12.5, 16, 20Mhz due to less jitter */
+/* 2-20Mhz - either as a fraction, i.e. freq 20000000hz divider 2 -> 10Mhz or as plain old 10000000hz (double) */
 extern ADDAPI int ADDCALL hackrf_set_sample_rate_manual(hackrf_device* device, const uint32_t freq_hz, const uint32_t divider);
 extern ADDAPI int ADDCALL hackrf_set_sample_rate(hackrf_device* device, const double freq_hz);
 
@@ -235,12 +270,33 @@ extern ADDAPI int ADDCALL hackrf_init_sweep(hackrf_device* device,
 
 /* Operacake functions */
 extern ADDAPI int ADDCALL hackrf_get_operacake_boards(hackrf_device* device, uint8_t* boards);
+extern ADDAPI int ADDCALL hackrf_set_operacake_mode(hackrf_device* device, uint8_t address, enum operacake_switching_mode mode);
+extern ADDAPI int ADDCALL hackrf_get_operacake_mode(hackrf_device* device, uint8_t address, enum operacake_switching_mode *mode);
 extern ADDAPI int ADDCALL hackrf_set_operacake_ports(hackrf_device* device,
                                        uint8_t address,
                                        uint8_t port_a,
                                        uint8_t port_b);
+extern ADDAPI int ADDCALL hackrf_set_operacake_dwell_times(hackrf_device* device, hackrf_operacake_dwell_time *dwell_times, uint8_t count);
+extern ADDAPI int ADDCALL hackrf_set_operacake_freq_ranges(hackrf_device* device, hackrf_operacake_freq_range *freq_ranges, uint8_t count);
 
 extern ADDAPI int ADDCALL hackrf_reset(hackrf_device* device);
+
+extern ADDAPI int ADDCALL hackrf_set_operacake_ranges(hackrf_device* device,
+                                                      uint8_t* ranges,
+                                                      uint8_t num_ranges);
+
+extern ADDAPI int ADDCALL hackrf_set_clkout_enable(hackrf_device* device, const uint8_t value);
+
+extern ADDAPI int ADDCALL hackrf_operacake_gpio_test(hackrf_device* device,
+                                                     uint8_t address,
+													 uint16_t* test_result);
+#ifdef HACKRF_ISSUE_609_IS_FIXED
+extern ADDAPI int ADDCALL hackrf_cpld_checksum(hackrf_device* device,
+											   uint32_t* crc);
+#endif /* HACKRF_ISSUE_609_IS_FIXED */
+
+extern ADDAPI int ADDCALL hackrf_set_ui_enable(hackrf_device* device, const uint8_t value);
+extern ADDAPI int ADDCALL hackrf_start_rx_sweep(hackrf_device* device, hackrf_sample_block_cb_fn callback, void* rx_ctx);
 
 #ifdef __cplusplus
 } // __cplusplus defined.

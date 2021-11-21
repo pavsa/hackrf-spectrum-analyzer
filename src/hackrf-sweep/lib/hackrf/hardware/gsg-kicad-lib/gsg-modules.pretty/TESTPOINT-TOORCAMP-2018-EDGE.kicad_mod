@@ -1,0 +1,11 @@
+(module TESTPOINT-TOORCAMP-2018-EDGE (layer F.Cu) (tedit 5AE363C8)
+  (attr virtual)
+  (fp_text reference REF** (at 27 0 90) (layer F.SilkS) hide
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (fp_text value TESTPOINT-TOORCAMP-2018-EDGE (at 31 0 90) (layer F.Fab)
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (pad 1 smd trapezoid (at 31.125 0) (size 4.25 10.75) (rect_delta -0.776 0 ) (layers F.Cu F.Mask))
+  (pad 1 smd trapezoid (at 31.75 0) (size 5.5 12.25) (rect_delta -1.1 0 ) (layers F.Mask))
+)

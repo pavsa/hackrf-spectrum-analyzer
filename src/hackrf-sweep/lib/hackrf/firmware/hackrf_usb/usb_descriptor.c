@@ -36,6 +36,8 @@
 #define USB_PRODUCT_ID			(0xFFFF)
 #endif
 
+#define USB_API_VERSION			(0x0105)
+
 #define USB_WORD(x)	(x & 0xFF), ((x >> 8) & 0xFF)
 
 #define USB_MAX_PACKET0     	(64)
@@ -57,7 +59,7 @@ uint8_t usb_descriptor_device[] = {
 	USB_MAX_PACKET0,		   // bMaxPacketSize0
 	USB_WORD(USB_VENDOR_ID),	   // idVendor
 	USB_WORD(USB_PRODUCT_ID),	   // idProduct
-	USB_WORD(0x0102),		   // bcdDevice
+	USB_WORD(USB_API_VERSION),	// bcdDevice
 	0x01,				   // iManufacturer
 	0x02,				   // iProduct
 	0x04,				   // iSerialNumber
@@ -215,6 +217,14 @@ uint8_t usb_descriptor_string_product[] = {
 	'k', 0x00,
 	'e', 0x00,
 	'r', 0x00,
+#elif RAD1O
+	12,						// bLength
+	USB_DESCRIPTOR_TYPE_STRING,		// bDescriptorType
+	'r', 0x00,
+	'a', 0x00,
+	'd', 0x00,
+	'1', 0x00,
+	'o', 0x00,
 #else
 	14,						// bLength
 	USB_DESCRIPTOR_TYPE_STRING,		// bDescriptorType
@@ -243,8 +253,28 @@ uint8_t usb_descriptor_string_config_description[] = {
 	'r', 0x00,
 };
 
-
+#ifdef DFU_MODE
+uint8_t usb_descriptor_string_serial_number[] = {
+	30,						// bLength
+	USB_DESCRIPTOR_TYPE_STRING,		// bDescriptorType
+	'R', 0x00,
+	'u', 0x00,
+	'n', 0x00,
+	'n', 0x00,
+	'i', 0x00,
+	'n', 0x00,
+	'g', 0x00,
+	'F', 0x00,
+	'r', 0x00,
+	'o', 0x00,
+	'm', 0x00,
+	'R', 0x00,
+	'A', 0x00,
+	'M', 0x00,
+};
+#else
 uint8_t usb_descriptor_string_serial_number[USB_DESCRIPTOR_STRING_SERIAL_BUF_LEN];
+#endif
 
 uint8_t* usb_descriptor_strings[] = {
 	usb_descriptor_string_languages,

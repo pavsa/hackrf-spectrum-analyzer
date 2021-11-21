@@ -20,6 +20,10 @@ Thumbs.db
 *.sublime-workspace
 .vscode*
 
+CMakefiles/
+Makefile
+
+
 # Xilinx tools create an enormous amount of poop:
 firmware/cpld/**/isim/
 firmware/cpld/**/_ngo/
@@ -68,3 +72,5 @@ firmware/cpld/**/*.xst
 firmware/cpld/**/*.xwbt
 
 firmware/**/build
+
+*.pyc
