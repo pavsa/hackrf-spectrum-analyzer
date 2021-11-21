@@ -120,11 +120,24 @@ int main(void)
 		}
 		if(result == HACKRF_SUCCESS) {
 			for(j=0; j<8; j++) {
-				if(operacakes[j] == 0)
+				if(operacakes[j] == HACKRF_OPERACAKE_ADDRESS_INVALID)
 					break;
-				printf("Operacake found, address: 0x%02x\n", operacakes[j]);
+				printf("Opera Cake found, address: %d\n", operacakes[j]);
 			}
 		}
+		
+#ifdef HACKRF_ISSUE_609_IS_FIXED
+		uint32_t cpld_crc = 0;
+		result = hackrf_cpld_checksum(device, &cpld_crc);
+		if ((result != HACKRF_SUCCESS) && (result != HACKRF_ERROR_USB_API_VERSION)) {
+			fprintf(stderr, "hackrf_cpld_checksum() failed: %s (%d)\n",
+					hackrf_error_name(result), result);
+				return EXIT_FAILURE;
+		}
+		if(result == HACKRF_SUCCESS) {
+			printf("CPLD checksum: 0x%08x\n", cpld_crc);
+		}
+#endif /* HACKRF_ISSUE_609_IS_FIXED */
 
 		result = hackrf_close(device);
 		if (result != HACKRF_SUCCESS) {

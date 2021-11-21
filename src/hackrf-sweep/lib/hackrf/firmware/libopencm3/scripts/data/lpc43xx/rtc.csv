@@ -1,0 +1,47 @@
+RTC_ILR,0,1,RTCCIF,Counter increment interrupt block interrupted,0,w
+RTC_ILR,1,1,RTCALF,Alarm interrupted,0,w
+RTC_CCR,0,1,CLKEN,Clock enable,,rw
+RTC_CCR,1,1,CTCRST,CTC reset,0,rw
+RTC_CCR,4,1,CCALEN,Calibration counter enable,,rw
+RTC_CIIR,0,1,IMSEC,Second interrupt enable,0,rw
+RTC_CIIR,1,1,IMMIN,Minute interrupt enable,0,rw
+RTC_CIIR,2,1,IMHOUR,Hour interrupt enable,0,rw
+RTC_CIIR,3,1,IMDOM,Day of month interrupt enable,0,rw
+RTC_CIIR,4,1,IMDOW,Day of week interrupt enable,0,rw
+RTC_CIIR,5,1,IMDOY,Day of year interrupt enable,0,rw
+RTC_CIIR,6,1,IMMON,Month interrupt enable,0,rw
+RTC_CIIR,7,1,IMYEAR,Year interrupt enable,0,rw
+RTC_AMR,0,1,AMRSEC,Second not compared for alarm,0,rw
+RTC_AMR,1,1,AMRMIN,Minute not compared for alarm,0,rw
+RTC_AMR,2,1,AMRHOUR,Hour not compared for alarm,0,rw
+RTC_AMR,3,1,AMRDOM,Day of month not compared for alarm,0,rw
+RTC_AMR,4,1,AMRDOW,Day of week not compared for alarm,0,rw
+RTC_AMR,5,1,AMRDOY,Day of year not compared for alarm,0,rw
+RTC_AMR,6,1,AMRMON,Month not compared for alarm,0,rw
+RTC_AMR,7,1,AMRYEAR,Year not compared for alarm,0,rw
+RTC_CTIME0,0,6,SECONDS,Seconds,,r
+RTC_CTIME0,8,6,MINUTES,Minutes,,r
+RTC_CTIME0,16,5,HOURS,Hours,,r
+RTC_CTIME0,24,3,DOW,Day of week,,r
+RTC_CTIME1,0,5,DOM,Day of month,,r
+RTC_CTIME1,8,4,MONTH,Month,,r
+RTC_CTIME1,16,12,YEAR,Year,,r
+RTC_CTIME2,0,12,DOY,Day of year,,r
+RTC_SEC,0,6,SECONDS,Seconds,,rw
+RTC_MIN,0,6,MINUTES,Minutes,,rw
+RTC_HRS,0,5,HOURS,Hours,,rw
+RTC_DOM,0,5,DOM,Day of month,,rw
+RTC_DOW,0,3,DOW,Day of week,,rw
+RTC_DOY,0,9,DOY,Day of year,,rw
+RTC_MONTH,0,4,MONTH,Month,,rw
+RTC_YEAR,0,12,YEAR,Year,,rw
+RTC_CALIBRATION,0,17,CALVAL,Calibration counter max,,rw
+RTC_CALIBRATION,17,1,CALDIR,Calibration counter direction,,rw
+RTC_ASEC,0,6,SECONDS,Alarm seconds,,rw
+RTC_AMIN,0,6,MINUTES,Alarm minutes,,rw
+RTC_AHRS,0,5,HOURS,Alarm hours,,rw
+RTC_ADOM,0,5,DOM,Alarm day of month,,rw
+RTC_ADOW,0,3,DOW,Alarm day of week,,rw
+RTC_ADOY,0,9,DOY,Alarm day of year,,rw
+RTC_AMON,0,4,MONTH,Alarm month,,rw
+RTC_AYRS,0,12,YEAR,Alarm year,,rw

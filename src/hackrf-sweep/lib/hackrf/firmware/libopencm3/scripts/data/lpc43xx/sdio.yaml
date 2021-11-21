@@ -1,0 +1,968 @@
+!!omap
+- SDIO_CTRL:
+    fields: !!omap
+    - CONTROLLER_RESET:
+        access: rw
+        description: Controller reset
+        lsb: 0
+        reset_value: '0'
+        width: 1
+    - FIFO_RESET:
+        access: rw
+        description: FIFO reset
+        lsb: 1
+        reset_value: '0'
+        width: 1
+    - DMA_RESET:
+        access: rw
+        description: DMA reset
+        lsb: 2
+        reset_value: '0'
+        width: 1
+    - INT_ENABLE:
+        access: rw
+        description: Global interrupt enable/disable
+        lsb: 4
+        reset_value: '0'
+        width: 1
+    - READ_WAIT:
+        access: rw
+        description: Read/wait send
+        lsb: 6
+        reset_value: '0'
+        width: 1
+    - SEND_IRQ_RESPONSE:
+        access: rw
+        description: Send IRQ response
+        lsb: 7
+        reset_value: '0'
+        width: 1
+    - ABORT_READ_DATA:
+        access: rw
+        description: Abort read data
+        lsb: 8
+        reset_value: '0'
+        width: 1
+    - SEND_CCSD:
+        access: rw
+        description: Send CCSD
+        lsb: 9
+        reset_value: '0'
+        width: 1
+    - SEND_AUTO_STOP_CCSD:
+        access: rw
+        description: Send auto stop CCSD
+        lsb: 10
+        reset_value: '0'
+        width: 1
+    - CEATA_DEVICE_INTERRUPT_STATUS:
+        access: rw
+        description: CEATA device interrupt status
+        lsb: 11
+        reset_value: '0'
+        width: 1
+    - CARD_VOLTAGE_A0:
+        access: rw
+        description: SD_VOLT0 pin control
+        lsb: 16
+        reset_value: '0'
+        width: 1
+    - CARD_VOLTAGE_A1:
+        access: rw
+        description: SD_VOLT1 pin control
+        lsb: 17
+        reset_value: '0'
+        width: 1
+    - CARD_VOLTAGE_A2:
+        access: rw
+        description: SD_VOLT2 pin control
+        lsb: 18
+        reset_value: '0'
+        width: 1
+    - USE_INTERNAL_DMAC:
+        access: rw
+        description: SD/MMC DMA use
+        lsb: 25
+        reset_value: '0'
+        width: 1
+- SDIO_PWREN:
+    fields: !!omap
+    - POWER_ENABLE:
+        access: rw
+        description: Power on/off switch for card
+        lsb: 0
+        reset_value: '0'
+        width: 1
+- SDIO_CLKDIV:
+    fields: !!omap
+    - CLK_DIVIDER0:
+        access: rw
+        description: Clock divider-0 value
+        lsb: 0
+        reset_value: '0'
+        width: 8
+    - CLK_DIVIDER1:
+        access: rw
+        description: Clock divider-1 value
+        lsb: 8
+        reset_value: '0'
+        width: 8
+    - CLK_DIVIDER2:
+        access: rw
+        description: Clock divider-2 value
+        lsb: 16
+        reset_value: '0'
+        width: 8
+    - CLK_DIVIDER3:
+        access: rw
+        description: Clock divider-3 value
+        lsb: 24
+        reset_value: '0'
+        width: 8
+- SDIO_CLKSRC:
+    fields: !!omap
+    - CLK_SOURCE:
+        access: rw
+        description: Clock divider source for SD card
+        lsb: 0
+        reset_value: '0'
+        width: 2
+- SDIO_CLKENA:
+    fields: !!omap
+    - CCLK_ENABLE:
+        access: rw
+        description: Clock-enable control for SD card clock
+        lsb: 0
+        reset_value: '0'
+        width: 1
+    - CCLK_LOW_POWER:
+        access: rw
+        description: Low-power control for SD card clock
+        lsb: 16
+        reset_value: '0'
+        width: 1
+- SDIO_TMOUT:
+    fields: !!omap
+    - RESPONSE_TIMEOUT:
+        access: rw
+        description: Response time-out value
+        lsb: 0
+        reset_value: '0x40'
+        width: 8
+    - DATA_TIMEOUT:
+        access: rw
+        description: Value for card data read time-out
+        lsb: 8
+        reset_value: '0xffffff'
+        width: 24
+- SDIO_CTYPE:
+    fields: !!omap
+    - CARD_WIDTH0:
+        access: rw
+        description: Indicates if card is 1-bit or 4-bit
+        lsb: 0
+        reset_value: '0'
+        width: 1
+    - CARD_WIDTH1:
+        access: rw
+        description: Indicates if card is 8-bit
+        lsb: 16
+        reset_value: '0'
+        width: 1
+- SDIO_BLKSIZ:
+    fields: !!omap
+    - BLOCK_SIZE:
+        access: rw
+        description: Block size
+        lsb: 0
+        reset_value: '0x200'
+        width: 16
+- SDIO_BYTCNT:
+    fields: !!omap
+    - BYTE_COUNT:
+        access: rw
+        description: Number of bytes to be transferred
+        lsb: 0
+        reset_value: '0x200'
+        width: 32
+- SDIO_INTMASK:
+    fields: !!omap
+    - CDET:
+        access: rw
+        description: Card detect
+        lsb: 0
+        reset_value: '0'
+        width: 1
+    - RE:
+        access: rw
+        description: Response error
+        lsb: 1
+        reset_value: '0'
+        width: 1
+    - CDONE:
+        access: rw
+        description: Command done
+        lsb: 2
+        reset_value: '0'
+        width: 1
+    - DTO:
+        access: rw
+        description: Data transfer over
+        lsb: 3
+        reset_value: '0'
+        width: 1
+    - TXDR:
+        access: rw
+        description: Transmit FIFO data request
+        lsb: 4
+        reset_value: '0'
+        width: 1
+    - RXDR:
+        access: rw
+        description: Receive FIFO data request
+        lsb: 5
+        reset_value: '0'
+        width: 1
+    - RCRC:
+        access: rw
+        description: Response CRC error
+        lsb: 6
+        reset_value: '0'
+        width: 1
+    - DCRC:
+        access: rw
+        description: Data CRC error
+        lsb: 7
+        reset_value: '0'
+        width: 1
+    - RTO:
+        access: rw
+        description: Response time-out
+        lsb: 8
+        reset_value: '0'
+        width: 1
+    - DRTO:
+        access: rw
+        description: Data read time-out
+        lsb: 9
+        reset_value: '0'
+        width: 1
+    - HTO:
+        access: rw
+        description: Data starvation-by-host time-out/volt_switch_int
+        lsb: 10
+        reset_value: '0'
+        width: 1
+    - FRUN:
+        access: rw
+        description: FIFO underrun/overrun error
+        lsb: 11
+        reset_value: '0'
+        width: 1
+    - HLE:
+        access: rw
+        description: Hardware locked write error
+        lsb: 12
+        reset_value: '0'
+        width: 1
+    - SBE:
+        access: rw
+        description: Start-bit error
+        lsb: 13
+        reset_value: '0'
+        width: 1
+    - ACD:
+        access: rw
+        description: Auto command done
+        lsb: 14
+        reset_value: '0'
+        width: 1
+    - EBE:
+        access: rw
+        description: End-bit error (read)/Write no CRC
+        lsb: 15
+        reset_value: '0'
+        width: 1
+    - SDIO_INT_MASK:
+        access: rw
+        description: Mask SDIO interrupt
+        lsb: 16
+        reset_value: '0'
+        width: 1
+- SDIO_CMDARG:
+    fields: !!omap
+    - CMD_ARG:
+        access: rw
+        description: Value indicates command argument to be passed to card
+        lsb: 0
+        reset_value: '0'
+        width: 32
+- SDIO_CMD:
+    fields: !!omap
+    - CMD_INDEX:
+        access: rw
+        description: Command index
+        lsb: 0
+        reset_value: '0'
+        width: 6
+    - RESPONSE_EXPECT:
+        access: rw
+        description: Response expect
+        lsb: 6
+        reset_value: '0'
+        width: 1
+    - RESPONSE_LENGTH:
+        access: rw
+        description: Response length
+        lsb: 7
+        reset_value: '0'
+        width: 1
+    - CHECK_RESPONSE_CRC:
+        access: rw
+        description: Check response CRC
+        lsb: 8
+        reset_value: '0'
+        width: 1
+    - DATA_EXPECTED:
+        access: rw
+        description: Data expected
+        lsb: 9
+        reset_value: '0'
+        width: 1
+    - READ_WRITE:
+        access: rw
+        description: Read/write
+        lsb: 10
+        reset_value: '0'
+        width: 1
+    - TRANSFER_MODE:
+        access: rw
+        description: Transfer mode
+        lsb: 11
+        reset_value: '0'
+        width: 1
+    - SEND_AUTO_STOP:
+        access: rw
+        description: Send auto stop
+        lsb: 12
+        reset_value: '0'
+        width: 1
+    - WAIT_PRVDATA_COMPLETE:
+        access: rw
+        description: Wait prvdata complete
+        lsb: 13
+        reset_value: '0'
+        width: 1
+    - STOP_ABORT_CMD:
+        access: rw
+        description: Stop abort command
+        lsb: 14
+        reset_value: '0'
+        width: 1
+    - SEND_INITIALIZATION:
+        access: rw
+        description: Send initialization
+        lsb: 15
+        reset_value: '0'
+        width: 1
+    - UPDATE_CLOCK_REGISTERS_ONLY:
+        access: rw
+        description: Update clock registers only
+        lsb: 21
+        reset_value: '0'
+        width: 1
+    - READ_CEATA_DEVICE:
+        access: rw
+        description: Read CEATA device
+        lsb: 22
+        reset_value: '0'
+        width: 1
+    - CCS_EXPECTED:
+        access: rw
+        description: CCS expected
+        lsb: 23
+        reset_value: '0'
+        width: 1
+    - ENABLE_BOOT:
+        access: rw
+        description: Enable boot
+        lsb: 24
+        reset_value: '0'
+        width: 1
+    - EXPECT_BOOT_ACK:
+        access: rw
+        description: Expect boot acknowledge
+        lsb: 25
+        reset_value: '0'
+        width: 1
+    - DISABLE_BOOT:
+        access: rw
+        description: Disable boot
+        lsb: 26
+        reset_value: '0'
+        width: 1
+    - BOOT_MODE:
+        access: rw
+        description: Boot mode
+        lsb: 27
+        reset_value: '0'
+        width: 1
+    - VOLT_SWITCH:
+        access: rw
+        description: Voltage switch bit
+        lsb: 28
+        reset_value: '0'
+        width: 1
+    - START_CMD:
+        access: rw
+        description: Start command
+        lsb: 31
+        reset_value: '0'
+        width: 1
+- SDIO_RESP0:
+    fields: !!omap
+    - RESPONSE0:
+        access: rw
+        description: Bit[31:0] of response
+        lsb: 0
+        reset_value: '0'
+        width: 32
+- SDIO_RESP1:
+    fields: !!omap
+    - RESPONSE1:
+        access: rw
+        description: Bit[63:32] of long response
+        lsb: 0
+        reset_value: '0'
+        width: 32
+- SDIO_RESP2:
+    fields: !!omap
+    - RESPONSE2:
+        access: rw
+        description: Bit[95:64] of long response
+        lsb: 0
+        reset_value: '0'
+        width: 32
+- SDIO_RESP3:
+    fields: !!omap
+    - RESPONSE3:
+        access: rw
+        description: Bit[127:96] of long response
+        lsb: 0
+        reset_value: '0'
+        width: 32
+- SDIO_MINTSTS:
+    fields: !!omap
+    - CDET:
+        access: rw
+        description: Card detect
+        lsb: 0
+        reset_value: '0'
+        width: 1
+    - RE:
+        access: rw
+        description: Response error
+        lsb: 1
+        reset_value: '0'
+        width: 1
+    - CDONE:
+        access: rw
+        description: Command done
+        lsb: 2
+        reset_value: '0'
+        width: 1
+    - DTO:
+        access: rw
+        description: Data transfer over
+        lsb: 3
+        reset_value: '0'
+        width: 1
+    - TXDR:
+        access: rw
+        description: Transmit FIFO data request
+        lsb: 4
+        reset_value: '0'
+        width: 1
+    - RXDR:
+        access: rw
+        description: Receive FIFO data request
+        lsb: 5
+        reset_value: '0'
+        width: 1
+    - RCRC:
+        access: rw
+        description: Response CRC error
+        lsb: 6
+        reset_value: '0'
+        width: 1
+    - DCRC:
+        access: rw
+        description: Data CRC error
+        lsb: 7
+        reset_value: '0'
+        width: 1
+    - RTO:
+        access: rw
+        description: Response time-out
+        lsb: 8
+        reset_value: '0'
+        width: 1
+    - DRTO:
+        access: rw
+        description: Data read time-out
+        lsb: 9
+        reset_value: '0'
+        width: 1
+    - HTO:
+        access: rw
+        description: Data starvation-by-host time-out
+        lsb: 10
+        reset_value: '0'
+        width: 1
+    - FRUN:
+        access: rw
+        description: FIFO underrun/overrun error
+        lsb: 11
+        reset_value: '0'
+        width: 1
+    - HLE:
+        access: rw
+        description: Hardware locked write error
+        lsb: 12
+        reset_value: '0'
+        width: 1
+    - SBE:
+        access: rw
+        description: Start-bit error
+        lsb: 13
+        reset_value: '0'
+        width: 1
+    - ACD:
+        access: rw
+        description: Auto command done
+        lsb: 14
+        reset_value: '0'
+        width: 1
+    - EBE:
+        access: rw
+        description: End-bit error (read)/write no CRC
+        lsb: 15
+        reset_value: '0'
+        width: 1
+    - SDIO_INTERRUPT:
+        access: rw
+        description: Interrupt from SDIO card
+        lsb: 16
+        reset_value: '0'
+        width: 1
+- SDIO_RINTSTS:
+    fields: !!omap
+    - CDET:
+        access: rw
+        description: Card detect
+        lsb: 0
+        reset_value: '0'
+        width: 1
+    - RE:
+        access: rw
+        description: Response error
+        lsb: 1
+        reset_value: '0'
+        width: 1
+    - CDONE:
+        access: rw
+        description: Command done
+        lsb: 2
+        reset_value: '0'
+        width: 1
+    - DTO:
+        access: rw
+        description: Data transfer over
+        lsb: 3
+        reset_value: '0'
+        width: 1
+    - TXDR:
+        access: rw
+        description: Transmit FIFO data request
+        lsb: 4
+        reset_value: '0'
+        width: 1
+    - RXDR:
+        access: rw
+        description: Receive FIFO data request
+        lsb: 5
+        reset_value: '0'
+        width: 1
+    - RCRC:
+        access: rw
+        description: Response CRC error
+        lsb: 6
+        reset_value: '0'
+        width: 1
+    - DCRC:
+        access: rw
+        description: Data CRC error
+        lsb: 7
+        reset_value: '0'
+        width: 1
+    - RTO_BAR:
+        access: rw
+        description: Response time-out (RTO)/boot ack received (BAR)
+        lsb: 8
+        reset_value: '0'
+        width: 1
+    - DRTO_BDS:
+        access: rw
+        description: Data read time-out (DRTO)/boot data start (BDS)
+        lsb: 9
+        reset_value: '0'
+        width: 1
+    - HTO:
+        access: rw
+        description: Data starvation-by-host time-out
+        lsb: 10
+        reset_value: '0'
+        width: 1
+    - FRUN:
+        access: rw
+        description: FIFO underrun/overrun error
+        lsb: 11
+        reset_value: '0'
+        width: 1
+    - HLE:
+        access: rw
+        description: Hardware locked write error
+        lsb: 12
+        reset_value: '0'
+        width: 1
+    - SBE:
+        access: rw
+        description: Start-bit error
+        lsb: 13
+        reset_value: '0'
+        width: 1
+    - ACD:
+        access: rw
+        description: Auto command done
+        lsb: 14
+        reset_value: '0'
+        width: 1
+    - EBE:
+        access: rw
+        description: End-bit error (read)/write no CRC
+        lsb: 15
+        reset_value: '0'
+        width: 1
+    - SDIO_INTERRUPT:
+        access: rw
+        description: Interrupt from SDIO card
+        lsb: 16
+        reset_value: '0'
+        width: 1
+- SDIO_STATUS:
+    fields: !!omap
+    - FIFO_RX_WATERMARK:
+        access: rw
+        description: FIFO reached receive watermark level
+        lsb: 0
+        reset_value: '0'
+        width: 1
+    - FIFO_TX_WATERMARK:
+        access: rw
+        description: FIFO reached transmit watermark level
+        lsb: 1
+        reset_value: '1'
+        width: 1
+    - FIFO_EMPTY:
+        access: rw
+        description: FIFO is empty
+        lsb: 2
+        reset_value: '1'
+        width: 1
+    - FIFO_FULL:
+        access: rw
+        description: FIFO is full
+        lsb: 3
+        reset_value: '0'
+        width: 1
+    - CMDFSMSTATES:
+        access: rw
+        description: Command FSM states
+        lsb: 4
+        reset_value: '0'
+        width: 4
+    - DATA_3_STATUS:
+        access: rw
+        description: Raw selected card_data[3]
+        lsb: 8
+        reset_value: ''
+        width: 1
+    - DATA_BUSY:
+        access: rw
+        description: Inverted version of raw selected card_data[0]
+        lsb: 9
+        reset_value: ''
+        width: 1
+    - DATA_STATE_MC_BUSY:
+        access: rw
+        description: Data transmit or receive state-machine is busy
+        lsb: 10
+        reset_value: '1'
+        width: 1
+    - RESPONSE_INDEX:
+        access: rw
+        description: Index of previous response
+        lsb: 11
+        reset_value: '0'
+        width: 6
+    - FIFO_COUNT:
+        access: rw
+        description: Number of filled locations in FIFO
+        lsb: 17
+        reset_value: '0'
+        width: 13
+    - DMA_ACK:
+        access: rw
+        description: DMA acknowledge signal
+        lsb: 30
+        reset_value: '0'
+        width: 1
+    - DMA_REQ:
+        access: rw
+        description: DMA request signal
+        lsb: 31
+        reset_value: '0'
+        width: 1
+- SDIO_FIFOTH:
+    fields: !!omap
+    - TX_WMARK:
+        access: rw
+        description: FIFO threshold watermark level when transmitting data to card
+        lsb: 0
+        reset_value: '0'
+        width: 12
+    - RX_WMARK:
+        access: rw
+        description: FIFO threshold watermark level when receiving data from card
+        lsb: 16
+        reset_value: '0x1f'
+        width: 12
+    - DMA_MTS:
+        access: rw
+        description: Burst size of multiple transaction
+        lsb: 28
+        reset_value: '0'
+        width: 3
+- SDIO_CDETECT:
+    fields: !!omap
+    - CARD_DETECT:
+        access: rw
+        description: Card detect - 0 represents presence of card
+        lsb: 0
+        reset_value: '0'
+        width: 1
+- SDIO_WRTPRT:
+    fields: !!omap
+    - WRITE_PROTECT:
+        access: rw
+        description: Write protect - 1 represents write protection
+        lsb: 0
+        reset_value: '0'
+        width: 1
+- SDIO_TCBCNT:
+    fields: !!omap
+    - TRANS_CARD_BYTE_COUNT:
+        access: rw
+        description: Number of bytes transferred by CIU unit to card
+        lsb: 0
+        reset_value: '0'
+        width: 32
+- SDIO_TBBCNT:
+    fields: !!omap
+    - TRANS_FIFO_BYTE_COUNT:
+        access: rw
+        description: Number of bytes transferred between host/DMA memory and BIU FIFO
+        lsb: 0
+        reset_value: '0'
+        width: 32
+- SDIO_DEBNCE:
+    fields: !!omap
+    - DEBOUNCE_COUNT:
+        access: rw
+        description: Number of host clocks used by debounce filter logic for card
+          detect
+        lsb: 0
+        reset_value: '0xffffff'
+        width: 24
+- SDIO_RST_N:
+    fields: !!omap
+    - CARD_RESET:
+        access: rw
+        description: Hardware reset
+        lsb: 0
+        reset_value: '1'
+        width: 1
+- SDIO_BMOD:
+    fields: !!omap
+    - SWR:
+        access: rw
+        description: Software reset
+        lsb: 0
+        reset_value: '0'
+        width: 1
+    - FB:
+        access: rw
+        description: Fixed burst
+        lsb: 1
+        reset_value: '0'
+        width: 1
+    - DSL:
+        access: rw
+        description: Descriptor skip length
+        lsb: 2
+        reset_value: '0'
+        width: 5
+    - DE:
+        access: rw
+        description: SD/MMC DMA enable
+        lsb: 7
+        reset_value: '0'
+        width: 1
+    - PBL:
+        access: rw
+        description: Programmable burst length
+        lsb: 8
+        reset_value: '0'
+        width: 3
+- SDIO_PLDMND:
+    fields: !!omap
+    - PD:
+        access: rw
+        description: Poll demand
+        lsb: 0
+        reset_value: ''
+        width: 32
+- SDIO_DBADDR:
+    fields: !!omap
+    - SDL:
+        access: rw
+        description: Start of descriptor list
+        lsb: 0
+        reset_value: '0'
+        width: 32
+- SDIO_IDSTS:
+    fields: !!omap
+    - TI:
+        access: rw
+        description: Transmit interrupt
+        lsb: 0
+        reset_value: '0'
+        width: 1
+    - RI:
+        access: rw
+        description: Receive interrupt
+        lsb: 1
+        reset_value: '0'
+        width: 1
+    - FBE:
+        access: rw
+        description: Fatal bus error interrupt
+        lsb: 2
+        reset_value: '0'
+        width: 1
+    - DU:
+        access: rw
+        description: Descriptor unavailable interrupt
+        lsb: 4
+        reset_value: '0'
+        width: 1
+    - CES:
+        access: rw
+        description: Card error summary
+        lsb: 5
+        reset_value: '0'
+        width: 1
+    - NIS:
+        access: rw
+        description: Normal interrupt summary
+        lsb: 8
+        reset_value: '0'
+        width: 1
+    - AIS:
+        access: rw
+        description: Abnormal interrupt summary
+        lsb: 9
+        reset_value: '0'
+        width: 1
+    - EB:
+        access: rw
+        description: Error bits
+        lsb: 10
+        reset_value: '0'
+        width: 3
+    - FSM:
+        access: rw
+        description: DMAC state machine present state
+        lsb: 13
+        reset_value: '0'
+        width: 4
+- SDIO_IDINTEN:
+    fields: !!omap
+    - TI:
+        access: rw
+        description: Transmit interrupt enable
+        lsb: 0
+        reset_value: '0'
+        width: 1
+    - RI:
+        access: rw
+        description: Receive interrupt enable
+        lsb: 1
+        reset_value: '0'
+        width: 1
+    - FBE:
+        access: rw
+        description: Fatal bus error enable
+        lsb: 2
+        reset_value: '0'
+        width: 1
+    - DU:
+        access: rw
+        description: Descriptor unavailable interrupt
+        lsb: 4
+        reset_value: '0'
+        width: 1
+    - CES:
+        access: rw
+        description: Card error summary interrupt
+        lsb: 5
+        reset_value: '0'
+        width: 1
+    - NIS:
+        access: rw
+        description: Normal interrupt summary enable
+        lsb: 8
+        reset_value: '0'
+        width: 1
+    - AIS:
+        access: rw
+        description: Abnormal interrupt summary enable
+        lsb: 9
+        reset_value: '0'
+        width: 1
+- SDIO_DSCADDR:
+    fields: !!omap
+    - HDA:
+        access: rw
+        description: Host descriptor address pointer
+        lsb: 0
+        reset_value: '0'
+        width: 32
+- SDIO_BUFADDR:
+    fields: !!omap
+    - HBA:
+        access: rw
+        description: Host buffer address pointer
+        lsb: 0
+        reset_value: '0'
+        width: 32

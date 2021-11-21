@@ -1,0 +1,32 @@
+SPIFI_CTRL,0,16,TIMEOUT,Memory mode idle timeout,0xffff,rw
+SPIFI_CTRL,16,4,CSHIGH,Minimum CS# high time,15,rw
+SPIFI_CTRL,21,1,D_PRFTCH_DIS,Disable speculative prefetch,0,rw
+SPIFI_CTRL,22,1,INTEN,Enable command end interrupt,0,rw
+SPIFI_CTRL,23,1,MODE3,SPI mode 3 select,0,rw
+SPIFI_CTRL,27,1,PRFTCH_DIS,Disable prefetching of cache lines,0,rw
+SPIFI_CTRL,28,1,DUAL,Select dual protocol,0,rw
+SPIFI_CTRL,29,1,RFCLK,Read data on falling edge,0,rw
+SPIFI_CTRL,30,1,FBCLK,Feedback clock select,1,rw
+SPIFI_CTRL,31,1,DMAEN,DMA request output enable,0,rw
+SPIFI_CMD,0,14,DATALEN,Data bytes in command,0,rw
+SPIFI_CMD,14,1,POLL,Poll at end of command,0,rw
+SPIFI_CMD,15,1,DOUT,Data output to serial flash,0,rw
+SPIFI_CMD,16,3,INTLEN,Intermediate bytes before data,0,rw
+SPIFI_CMD,19,2,FIELDFORM,Form of command fields,0,rw
+SPIFI_CMD,21,3,FRAMEFORM,Form of the opcode/address fields,0,rw
+SPIFI_CMD,24,8,OPCODE,Command opcode,0,rw
+SPIFI_ADDR,0,32,ADDRESS,Address field value,0,rw
+SPIFI_IDATA,0,32,IDATA,Intermediate bytes value,0,rw
+SPIFI_CLIMIT,0,32,CLIMIT,Upper limit of cacheable memory,0x08000000,rw
+SPIFI_DATA,0,32,DATA,Input or output data,0,rw
+SPIFI_MCMD,14,1,POLL,Must be zero,0,rw
+SPIFI_MCMD,15,1,DOUT,Must be zero,0,rw
+SPIFI_MCMD,16,3,INTLEN,Intermediate bytes before data,0,rw
+SPIFI_MCMD,19,2,FIELDFORM,Form of command fields,0,rw
+SPIFI_MCMD,21,3,FRAMEFORM,Form of the opcode/address fields,0,rw
+SPIFI_MCMD,24,8,OPCODE,Command opcode,0,rw
+SPIFI_STAT,0,1,MCINIT,Memory command initialized,0,rw
+SPIFI_STAT,1,1,CMD,Command active,0,rw
+SPIFI_STAT,4,1,RESET,Abort current command/memory mode,0,rw
+SPIFI_STAT,5,1,INTRQ,Interrupt request status,0,rw
+SPIFI_STAT,24,8,VERSION,Peripheral hardware version,0x02,rw

@@ -51,12 +51,63 @@ static struct option long_options[] = {
 	{ "length", required_argument, 0, 'l' },
 	{ "read", required_argument, 0, 'r' },
 	{ "write", required_argument, 0, 'w' },
+	{ "compatibility", no_argument, 0, 'c' },
 	{ "device", required_argument, 0, 'd' },
 	{ "reset", no_argument, 0, 'R' },
+	{ "status", no_argument, 0, 's' },
+	{ "clear", no_argument, 0, 'c' },
 	{ "verbose", no_argument, 0, 'v' },
 	{ "help", no_argument, 0, 'h' },
 	{ 0, 0, 0, 0 },
 };
+
+/* Check for USB product string descriptor text in firmware file
+ * It should match the appropriate one for the BOARD_ID
+ * If you're already running firmware that reports the wrong ID
+ * I can't help you, but you can use the -i optionto ignore (or DFU)
+ */
+int compatibility_check(uint8_t* data, int length, hackrf_device* device)
+{
+	int str_len, i,j;
+	bool match = false;
+	uint8_t board_id;
+	char* dev_str;
+	hackrf_board_id_read(device, &board_id);
+	switch(board_id)
+	{
+	case BOARD_ID_JAWBREAKER:
+		dev_str = "HackRF Jawbreaker";
+		str_len = 17;
+		break;
+	case BOARD_ID_HACKRF_ONE:
+		dev_str =  "HackRF One";
+		str_len = 10;
+		break;
+	case BOARD_ID_RAD1O:
+		dev_str =  "rad1o";
+		str_len = 5;
+		break;
+	default:
+		printf("Unknown Board ID");
+		return 1;
+	}
+	// Search for dev_str in uint8_t array of bytes that we're flashing
+	for(i=0; i<length-str_len; i++){
+		if(data[i] == dev_str[0]) {
+			match = true;
+			for(j=1; j<str_len; j++) {
+				if((data[i+j*2] != dev_str[j]) ||
+				   (data[1+i+j*2] != 0x00)) {
+					match = false;
+					break;
+				}
+			}
+			if(match)
+				return 0;
+		}
+	}
+	return 1;
+}
 
 int parse_u32(char* s, uint32_t* const value)
 {
@@ -94,7 +145,10 @@ static void usage()
 	printf("\t-l, --length <n>: number of bytes to read (default: %d)\n", MAX_LENGTH);
 	printf("\t-r, --read <filename>: Read data into file.\n");
 	printf("\t-w, --write <filename>: Write data from file.\n");
+	printf("\t-i, --no-check: Skip check for firmware compatibility with target device.\n");
 	printf("\t-d, --device <serialnumber>: Serial number of device, if multiple devices\n");
+	printf("\t-s, --status: Read SPI flash status registers before other operations.\n");
+	printf("\t-c, --clear: Clear SPI flash status registers before other operations.\n");
 	printf("\t-R, --reset: Reset HackRF after other operations.\n");
 	printf("\t-v, --verbose: Verbose output.\n");
 }
@@ -102,6 +156,7 @@ static void usage()
 int main(int argc, char** argv)
 {
 	int opt;
+	uint8_t status[2];
 	uint32_t address = 0;
 	uint32_t length = MAX_LENGTH;
 	uint32_t tmp_length;
@@ -113,14 +168,17 @@ int main(int argc, char** argv)
 	int option_index = 0;
 	static uint8_t data[MAX_LENGTH];
 	uint8_t* pdata = &data[0];
-	FILE* fd = NULL;
+	FILE* infile = NULL;
 	bool read = false;
 	bool write = false;
+	bool ignore_compat_check = false;
 	bool verbose = false;
 	bool reset = false;
+	bool read_status = false;
+	bool clear_status = false;
 	uint16_t usb_api;
 
-	while ((opt = getopt_long(argc, argv, "a:l:r:w:d:vRh?", long_options,
+	while ((opt = getopt_long(argc, argv, "a:l:r:w:id:scvRh?", long_options,
 			&option_index)) != EOF) {
 		switch (opt) {
 		case 'a':
@@ -140,9 +198,21 @@ int main(int argc, char** argv)
 			write = true;
 			path = optarg;
 			break;
+
+		case 'i':
+			ignore_compat_check = true;
+			break;
 		
 		case 'd':
 			serial_number = optarg;
+			break;
+
+		case 's':
+			read_status = true;
+			break;
+
+		case 'c':
+			clear_status = true;
 			break;
 
 		case 'v':
@@ -178,7 +248,7 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 
-	if(!(write || read || reset)) {
+	if(!(write || read || reset || read_status || clear_status)) {
 		fprintf(stderr, "Specify either read, write, or reset option.\n");
 		usage();
 		return EXIT_FAILURE;
@@ -186,24 +256,24 @@ int main(int argc, char** argv)
 	
 	if( write )
 	{
-		fd = fopen(path, "rb");
-		if(fd == NULL)
+		infile = fopen(path, "rb");
+		if(infile == NULL)
 		{
 			printf("Error opening file %s\n", path);
 			return EXIT_FAILURE;
 		}
 		/* Get size of the file  */
-		fseek(fd, 0, SEEK_END); /* Not really portable but work on major OS Linux/Win32 */
-		length = ftell(fd);
+		fseek(infile, 0, SEEK_END); /* Not really portable but work on major OS Linux/Win32 */
+		length = ftell(infile);
 		/* Move to start */
-		rewind(fd);
+		rewind(infile);
 		printf("File size %d bytes.\n", length);
 	}
 
 	if (length == 0) {
 		fprintf(stderr, "Requested transfer of zero bytes.\n");
-		if(fd != NULL)
-			fclose(fd);
+		if(infile != NULL)
+			fclose(infile);
 		usage();
 		return EXIT_FAILURE;
 	}
@@ -211,15 +281,15 @@ int main(int argc, char** argv)
 	if ((length > MAX_LENGTH) || (address > MAX_LENGTH)
 			|| ((address + length) > MAX_LENGTH)) {
 		fprintf(stderr, "Request exceeds size of flash memory.\n");
-		if(fd != NULL)
-			fclose(fd);
+		if(infile != NULL)
+			fclose(infile);
 		usage();
 		return EXIT_FAILURE;
 	}
 
 	if (read) {
-		fd = fopen(path, "wb");
-		if(fd == NULL)
+		infile = fopen(path, "wb");
+		if(infile == NULL)
 		{
 			printf("Error to open file %s\n", path);
 			return EXIT_FAILURE;
@@ -240,6 +310,42 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 
+	if(read_status) {
+		result = hackrf_spiflash_status(device, status);
+		if (result != HACKRF_SUCCESS) {
+			fprintf(stderr, "hackrf_spiflash_status() failed: %s (%d)\n",
+					hackrf_error_name(result), result);
+			return EXIT_FAILURE;
+		}
+		if(!verbose) {
+			printf("Status: 0x%02x %02x\n", status[0], status[1]);
+		} else {
+			printf("SRP0\t%x\nSEC\t%x\nTB\t%x\nBP\t%x\nWEL\t%x\nBusy\t%x\n", 
+			       (status[0] & 0x80) >> 7,
+			       (status[0] & 0x40) >> 6,
+			       (status[0] & 0x20) >> 5,
+			       (status[0] & 0x1C) >> 2,
+			       (status[0] & 0x02) >> 1,
+			       status[0] & 0x01);
+			printf("SUS\t%x\nCMP\t%x\nLB\t%x\nRes\t%x\nQE\t%x\nSRP1\t%x\n", 
+			       (status[1] & 0x80) >> 7,
+			       (status[1] & 0x40) >> 6,
+			       (status[1] & 0x38) >> 3,
+			       (status[1] & 0x04) >> 2,
+			       (status[1] & 0x02) >> 1,
+			       status[1] & 0x01);
+		}
+	}
+
+	if(clear_status) {
+		result = hackrf_spiflash_clear_status(device);
+		if (result != HACKRF_SUCCESS) {
+			fprintf(stderr, "hackrf_spiflash_clear_status() failed: %s (%d)\n",
+					hackrf_error_name(result), result);
+			return EXIT_FAILURE;
+		}
+	}
+
 	if(read) {
 		ssize_t bytes_written;
 		tmp_length = length;
@@ -251,40 +357,50 @@ int main(int argc, char** argv)
 			if (result != HACKRF_SUCCESS) {
 				fprintf(stderr, "hackrf_spiflash_read() failed: %s (%d)\n",
 						hackrf_error_name(result), result);
-				fclose(fd);
-				fd = NULL;
+				fclose(infile);
+				infile = NULL;
 				return EXIT_FAILURE;
 			}			
 			address += xfer_len;
 			pdata += xfer_len;
 			tmp_length -= xfer_len;
 		}
-		bytes_written = fwrite(data, 1, length, fd);
+		bytes_written = fwrite(data, 1, length, infile);
 		if (bytes_written != length) {
 			fprintf(stderr, "Failed write to file (wrote %d bytes).\n",
 					(int)bytes_written);
-			fclose(fd);
-			fd = NULL;
+			fclose(infile);
+			infile = NULL;
 			return EXIT_FAILURE;
 		}
 	}
 
 	if(write) {
-		ssize_t bytes_read = fread(data, 1, length, fd);
+		ssize_t bytes_read = fread(data, 1, length, infile);
 		if (bytes_read != length) {
 			fprintf(stderr, "Failed read file (read %d bytes).\n",
 					(int)bytes_read);
-			fclose(fd);
-			fd = NULL;
+			fclose(infile);
+			infile = NULL;
 			return EXIT_FAILURE;
+		}
+		if(!ignore_compat_check) {
+			printf("Checking target device compatibility\n");
+			result = compatibility_check(data, length, device);
+			if(result) {
+				printf("Compatibility test failed.\n");
+				fclose(infile);
+				infile = NULL;
+				return EXIT_FAILURE;
+			}
 		}
 		printf("Erasing SPI flash.\n");
 		result = hackrf_spiflash_erase(device);
 		if (result != HACKRF_SUCCESS) {
 			fprintf(stderr, "hackrf_spiflash_erase() failed: %s (%d)\n",
 					hackrf_error_name(result), result);
-			fclose(fd);
-			fd = NULL;
+			fclose(infile);
+			infile = NULL;
 			return EXIT_FAILURE;
 		}
 		if( !verbose ) printf("Writing %d bytes at 0x%06x.\n", length, address);
@@ -295,8 +411,8 @@ int main(int argc, char** argv)
 			if (result != HACKRF_SUCCESS) {
 				fprintf(stderr, "hackrf_spiflash_write() failed: %s (%d)\n",
 						hackrf_error_name(result), result);
-				fclose(fd);
-				fd = NULL;
+				fclose(infile);
+				infile = NULL;
 				return EXIT_FAILURE;
 			}
 			address += xfer_len;
@@ -305,9 +421,9 @@ int main(int argc, char** argv)
 		}
 	}
 
-	if (fd != NULL) {
-		fclose(fd);
-		fd = NULL;
+	if (infile != NULL) {
+		fclose(infile);
+		infile = NULL;
 	}
 
 	if(reset) {

@@ -77,8 +77,15 @@ extern "C"
 /* GPIO Input PinMux */
 #define SCU_PINMUX_BOOT0    (P1_1)  /* GPIO0[8] on P1_1 */
 #define SCU_PINMUX_BOOT1    (P1_2)  /* GPIO0[9] on P1_2 */
+#ifndef HACKRF_ONE
 #define SCU_PINMUX_BOOT2    (P2_8)  /* GPIO5[7] on P2_8 */
 #define SCU_PINMUX_BOOT3    (P2_9)  /* GPIO1[10] on P2_9 */
+#endif
+#define SCU_PINMUX_PP_LCD_TE  (P2_3)  /* GPIO5[3] on P2_3 */
+#define SCU_PINMUX_PP_LCD_RDX (P2_4)  /* GPIO5[4] on P2_4 */
+#define SCU_PINMUX_PP_UNUSED  (P2_8)  /* GPIO5[7] on P2_8 */
+#define SCU_PINMUX_PP_LCD_WRX (P2_9)  /* GPIO1[10] on P2_9 */
+#define SCU_PINMUX_PP_DIR     (P2_13) /* GPIO1[13] on P2_13 */
 
 /* USB peripheral */
 #ifdef JAWBREAKER
@@ -87,10 +94,10 @@ extern "C"
 #endif
 
 /* SSP1 Peripheral PinMux */
-#define SCU_SSP1_MISO       (P1_3)  /* P1_3 */
-#define SCU_SSP1_MOSI       (P1_4)  /* P1_4 */
+#define SCU_SSP1_CIPO       (P1_3)  /* P1_3 */
+#define SCU_SSP1_COPI       (P1_4)  /* P1_4 */
 #define SCU_SSP1_SCK        (P1_19) /* P1_19 */
-#define SCU_SSP1_SSEL       (P1_20) /* P1_20 */
+#define SCU_SSP1_CS       (P1_20) /* P1_20 */
 
 /* CPLD JTAG interface */
 #define SCU_PINMUX_CPLD_TDO (P9_5)  /* GPIO5[18] */
@@ -170,10 +177,10 @@ extern "C"
 
 
 /* SPI flash */
-#define SCU_SSP0_MISO       (P3_6)
-#define SCU_SSP0_MOSI       (P3_7)
+#define SCU_SSP0_CIPO       (P3_6)
+#define SCU_SSP0_COPI       (P3_7)
 #define SCU_SSP0_SCK        (P3_3)
-#define SCU_SSP0_SSEL       (P3_8) /* GPIO5[11] on P3_8 */
+#define SCU_SSP0_CS       (P3_8) /* GPIO5[11] on P3_8 */
 #define SCU_FLASH_HOLD      (P3_4) /* GPIO1[14] on P3_4 */
 #define SCU_FLASH_WP        (P3_5) /* GPIO1[15] on P3_5 */
 
@@ -206,6 +213,14 @@ extern "C"
 #define SCU_RX_LNA          (P6_7) /* GPIO5[15] on P6_7 */
 #endif
 
+#define SCU_PINMUX_PP_D0    (P7_0)  /* GPIO3[8] */
+#define SCU_PINMUX_PP_D1    (P7_1)  /* GPIO3[9] */
+#define SCU_PINMUX_PP_D2    (P7_2)  /* GPIO3[10] */
+#define SCU_PINMUX_PP_D3    (P7_3)  /* GPIO3[11] */
+#define SCU_PINMUX_PP_D4    (P7_4)  /* GPIO3[12] */
+#define SCU_PINMUX_PP_D5    (P7_5)  /* GPIO3[13] */
+#define SCU_PINMUX_PP_D6    (P7_6)  /* GPIO3[14] */
+#define SCU_PINMUX_PP_D7    (P7_7)  /* GPIO3[15] */
 /* TODO add other Pins */
 #define SCU_PINMUX_GPIO3_8  (P7_0)  /* GPIO3[8] */
 #define SCU_PINMUX_GPIO3_9  (P7_1)  /* GPIO3[9] */
@@ -216,8 +231,10 @@ extern "C"
 #define SCU_PINMUX_GPIO3_14 (P7_6)  /* GPIO3[14] */
 #define SCU_PINMUX_GPIO3_15 (P7_7)  /* GPIO3[15] */
 
+#define SCU_PINMUX_PP_TDO   (P1_5)  /* GPIO1[8] */
 #define SCU_PINMUX_SD_POW   (P1_5)  /* GPIO1[8] */
 #define SCU_PINMUX_SD_CMD   (P1_6)  /* GPIO1[9] */
+#define SCU_PINMUX_PP_TMS   (P1_8)  /* GPIO1[1] */
 #define SCU_PINMUX_SD_VOLT0 (P1_8)  /* GPIO1[1] */
 #define SCU_PINMUX_SD_DAT0  (P1_9)  /* GPIO1[2] */
 #define SCU_PINMUX_SD_DAT1  (P1_10) /* GPIO1[3] */
@@ -225,6 +242,8 @@ extern "C"
 #define SCU_PINMUX_SD_DAT3  (P1_12) /* GPIO1[5] */
 #define SCU_PINMUX_SD_CD    (P1_13) /* GPIO1[6] */
 
+#define SCU_PINMUX_PP_IO_STBX (P2_0)  /* GPIO5[0] */
+#define SCU_PINMUX_PP_ADDR    (P2_1)  /* GPIO5[1] */
 #define SCU_PINMUX_U0_TXD   (P2_0)  /* GPIO5[0] */
 #define SCU_PINMUX_U0_RXD   (P2_1)  /* GPIO5[1] */
 
@@ -237,13 +256,20 @@ typedef enum {
 	TRANSCEIVER_MODE_RX = 1,
 	TRANSCEIVER_MODE_TX = 2,
 	TRANSCEIVER_MODE_SS = 3,
-	TRANSCEIVER_MODE_CPLD_UPDATE = 4
+	TRANSCEIVER_MODE_CPLD_UPDATE = 4,
+	TRANSCEIVER_MODE_RX_SWEEP = 5,
 } transceiver_mode_t;
 
 typedef enum {
 	HW_SYNC_MODE_OFF = 0,
 	HW_SYNC_MODE_ON = 1,
 } hw_sync_mode_t;
+
+typedef enum {
+	CLOCK_SOURCE_HACKRF = 0,
+	CLOCK_SOURCE_EXTERNAL = 1,
+	CLOCK_SOURCE_PORTAPACK = 2,
+} clock_source_t;
 
 void delay(uint32_t duration);
 
@@ -263,8 +289,6 @@ extern jtag_t jtag_cpld;
 extern i2c_bus_t i2c0;
 
 void cpu_clock_init(void);
-void cpu_clock_pll1_low_speed(void);
-void cpu_clock_pll1_max_speed(void);
 void ssp1_set_mode_max2837(void);
 void ssp1_set_mode_max5864(void);
 
@@ -276,6 +300,8 @@ void disable_1v8_power(void);
 bool sample_rate_frac_set(uint32_t rate_num, uint32_t rate_denom);
 bool sample_rate_set(const uint32_t sampling_rate_hz);
 bool baseband_filter_bandwidth_set(const uint32_t bandwidth_hz);
+
+clock_source_t activate_best_clock_source(void);
 
 #if (defined HACKRF_ONE || defined RAD1O)
 void enable_rf_power(void);
@@ -293,12 +319,9 @@ void led_on(const led_t led);
 void led_off(const led_t led);
 void led_toggle(const led_t led);
 
-void hw_sync_syn();
-void hw_sync_stop();
-void hw_sync_ack();
-bool hw_sync_ready();
-void hw_sync_copy_state();
+void hw_sync_enable(const hw_sync_mode_t hw_sync_mode);
 
+void halt_and_flash(const uint32_t duration);
 
 #ifdef __cplusplus
 }

@@ -1,0 +1,92 @@
+------------------------------------------------------------------------------
+HACKING
+------------------------------------------------------------------------------
+
+Coding style
+------------
+
+The whole library is programmed using the Linux kernel coding style, see
+http://lxr.linux.no/linux/Documentation/CodingStyle for details.
+
+Please use the same style for any code contributions, thanks!
+
+Amendments to the Linux kernel coding style
+-------------------------------------------
+
+1) We use the stdint types. The linux kernel accepts the abbreviated types (u8,
+   s8, u16 and so on) for legacy reasons. We should in general not introduce
+   things like types ourselves as long as they are not necessary to make our
+   job possible of refining the hardware and make it easier to be used. stdint
+   is a standard and it is not in the scope of our project to introduce a new
+   type standard.
+
+2) Based on the same logic as in (1) we do not use __packed and __aligned
+   definitions, it is not our job to add compiler extensions. If we need to
+   deal with compiler incompatibility we will do that the same way we are
+   dealing with the depricated attribute by introducing a normal macro that is
+   not in the compiler reserved keyword space.
+
+3) We accept to write an empty body busy waiting while loop like this:
+	while (1);
+   there is no need to put the colon on the next line as per linux kernel
+   style.
+
+4) We always add brackets around bodies of if, while and for statements, even
+   if the body contains only one expression. It is dangerous to not have them
+   as it easily happens that one adds a second expression and is hunting for
+   hours why the code is not working just because of a missing bracket pair.
+
+Development guidelines
+----------------------
+
+ - Every new file added must have the usual license header, see the
+   existing files for examples.
+
+ - In general, please try to keep the register and bit naming as close
+   as possible to the official vendor datasheets. Among other reasons, this
+   makes it easier for users to find what they're looking for in the
+   datasheets, programming manuals, and application notes.
+
+ - All register definitions should follow the following naming conventions:
+
+   - The #define names should be all-caps, parts are separated by
+     an underscore.
+
+   - The name should be of the form SUBSYSTEM_REGISTER_BIT, e.g.
+     ADC_CR2_DMA, where ADC is the subsystem name, CR2 is the register NAME,
+     and DMA is the name of the bit in the register that is defined.
+
+ - All subsystem-specific function names should be prefixed with the
+   subsystem name. For example, gpio_set_mode() or rcc_osc_on().
+
+ - Please consistently use the short form types from <cm3/common.h>,
+   e.g. u8, u16, u32, and so on.
+
+ - Variables that are used to store register values read from registers or
+   to be stored in a register should be named reg8, reg16, reg32 etc.
+
+ - In the examples directory, the following structure should be used:
+
+    - One (or more) subdirectories for the type of microcontroller, e.g.
+      lm3s, lpc13xx, stm32/f1, stm32/f2, stm32/f4.
+
+    - One subdirectory in there for each eval board or piece of hardware, e.g.
+      stm32-h103, lisa-m, stm32vl-discovery, stm32f4-discovery, etc.
+
+    - One subdirectory in there for each example, e.g.
+      miniblink, button, usart, usb_dfu, etc.
+
+Tips and tricks
+---------------
+
+SublimeText users:
+
+ - The project contains a sublime project description file with some basic
+   settings provided to make hacking on libopencm3 easier.
+
+ - Recommended SublimeText plugins when hacking on libopencm3:
+
+   - TrailingSpaces: Show and trim trailing line spaces.
+
+   - SublimeLinter: Run checkpatch.pl in the background while you write your
+     code and indicate possible coding style issues on the fly.

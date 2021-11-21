@@ -41,7 +41,9 @@ CXX_WIN						= x86_64-w64-mingw32-g++
 
 ifeq ($(IS_RELEASE), y)
 	CFLAGS 					+= -fdata-sections -ffunction-sections -O2
-	LDFLAGS					+= -Wl,--gc-sections #-s 
+	# LDFLAGS					+= -Wl,--gc-sections #-s
+	LDFLAGS					+=  -dynamiclib -Wl,-dead_strip #-s
+
 else
 	CFLAGS 					+= -O0 -g #-O2
 	LDFLAGS					+= -g 
@@ -51,7 +53,7 @@ LDPATHS_STATIC				= -L""
 
 #paths
 #path to build dlls
-OUTPUT_DLL_DIR	    		= $(OUTPUT_PATH)/lib/linux-x86-64
+OUTPUT_DLL_DIR	    		= $(OUTPUT_PATH)/lib/darwin
 OUTPUT_DLL_DIR_WIN	     	= $(OUTPUT_PATH)/lib/win32-x86-64
 
 # Windows build setup
@@ -68,10 +70,10 @@ LDFLAGS_WIN					+= -Wl,--kill-at  -static-libgcc -static-libstdc++ -shared
 ANT_PATH					= ""
 #required installed libraries for linux: openjdk-8 or newer, libfftw3, libusb-1.0 
 JDK_EXECUTABLE				= java #required to generate jna wrapper
-DLL_LIB						= $(OUTPUT_DLL_DIR)/libhackrf-sweep.so
+DLL_LIB						= $(OUTPUT_DLL_DIR)/libhackrf-sweep.dylib
 LDLIBS						= -lusb-1.0 -lfftw3 -lfftw3f
 CFLAGS						+= -march=x86-64
-LIB_DIR						= linux-x86-64
+LIB_DIR						= darwin
 
 JNAERATOR					= $(CURDIR)/lib/jnaerator/jnaerator-0.13-20150328.111636-4-shaded.jar
 ZIP_FILE					= hackrf_spectrum_analyzer.zip
@@ -81,7 +83,7 @@ ZIP_FILE_PATH				= $(OUTPUT_DLL_DIR)/../../$(ZIP_FILE)
 .NOTPARALLEL: all
 .PHONY: all
 
-all: prepare $(MAIN_JAR) $(DLL_LIB) $(ZIP_FILE_PATH)
+all: prepare jnabridge $(MAIN_JAR) $(DLL_LIB) $(ZIP_FILE_PATH)
 
 .PHONY: dirs
 dirs:
@@ -104,8 +106,10 @@ prepare: dirs $(OBJECTS) $(OBJECTS_WIN) $(DLL_LIB_FFTW)
 	mkdir -p $(OUTPUT_DLL_DIR) $(OUTPUT_DLL_DIR_WIN)	
 	cp -f lib/program.ico lib/program.png $(OUTPUT_DLL_DIR)/../
 	cp lib/launchers/hackrf_sweep_spectrum_analyzer_linux.sh $(OUTPUT_PATH)
+	cp lib/launchers/hackrf_sweep_spectrum_analyzer_darwin.sh $(OUTPUT_PATH)
 	cp lib/launchers/hackrf_sweep_spectrum_analyzer_windows.cmd $(OUTPUT_PATH)
-	chmod +x $(OUTPUT_PATH)/hackrf_sweep_spectrum_analyzer_linux.sh #linux launcher
+	chmod +x $(OUTPUT_PATH)/hackrf_sweep_spectrum_analyzer_linux.sh
+	chmod +x $(OUTPUT_PATH)/hackrf_sweep_spectrum_analyzer_darwin.sh
 	cp -f $(DLL_LIB_FFTW) $(DLL_LIB_PTHREAD) $(DLL_LIB_USB) $(OUTPUT_DLL_DIR_WIN)
 	cp -f lib/zadig-2.5.exe $(OUTPUT_DLL_DIR_WIN)/../
 
@@ -127,7 +131,7 @@ $(DLL_LIB_WIN): $(OBJECTS_WIN)
 $(DLL_LIB):  $(OBJECTS)
 	echo "---- Building linux version [start] ----"	
 	$(CXX) $(LDFLAGS) $(LDPATHS) $(OBJECTS) -o $(DLL_LIB) $(LDLIBS)
-	strip --strip-unneeded $(DLL_LIB)
+	# strip $(DLL_LIB)
 	echo "---- Building linux version [done ] ----"
 
 $(BUILD_PATH)/%.c.$(OBJECT_SUFFIX): %.c

@@ -1,6 +1,7 @@
 /*
  * Copyright 2012 Jared Boone <jared@sharebrained.com>
  * Copyright 2013 Benjamin Vernoux <titanmkd@gmail.com>
+ * Copyright 2017 Schuyler St. Leger <schuyler.st.leger@gmail.com>
  *
  * This file is part of HackRF.
  *
@@ -49,13 +50,11 @@ void sgpio_configure_pin_functions(sgpio_config_t* const config) {
 	scu_pinmux(SCU_PINMUX_SGPIO14, SCU_GPIO_FAST | SCU_CONF_FUNCTION4);	/* GPIO5[13] */
 	scu_pinmux(SCU_PINMUX_SGPIO15, SCU_GPIO_FAST | SCU_CONF_FUNCTION4);	/* GPIO5[14] */
 
-	sgpio_cpld_stream_rx_set_decimation(config, 1);
 	sgpio_cpld_stream_rx_set_q_invert(config, 0);
+    hw_sync_enable(0);
 
 	gpio_output(config->gpio_rx_q_invert);
-	gpio_output(config->gpio_rx_decimation[0]);
-	gpio_output(config->gpio_rx_decimation[1]);
-	gpio_output(config->gpio_rx_decimation[2]);
+	gpio_output(config->gpio_hw_sync_enable);
 }
 
 void sgpio_set_slice_mode(
@@ -159,9 +158,11 @@ void sgpio_configure(
 	const uint_fast8_t pos = config->slice_mode_multislice ? 0x1f : 0x03;
 	const bool single_slice = !config->slice_mode_multislice;
 	const uint_fast8_t slice_count = config->slice_mode_multislice ? 8 : 1;
-	const uint_fast8_t clk_capture_mode = (direction == SGPIO_DIRECTION_TX) ? 0 : 1;
+	const uint_fast8_t clk_capture_mode = (direction == SGPIO_DIRECTION_TX) ? 0 : 0;
 	
-	uint32_t slice_enable_mask = 0;
+	// Also enable slice D for clkout to the SCTimer
+	uint32_t slice_enable_mask = BIT3;
+
 	/* Configure Slice A, I, E, J, C, K, F, L (sgpio_slice_mode_multislice mode) */
 	for(uint_fast8_t i=0; i<slice_count; i++)
 	{
@@ -258,21 +259,6 @@ bool sgpio_cpld_stream_is_enabled(sgpio_config_t* const config) {
 	return (SGPIO_GPIO_OUTREG & (1L << 10)) == 0; /* SGPIO10 */
 }
 
-bool sgpio_cpld_stream_rx_set_decimation(sgpio_config_t* const config, const uint_fast8_t n) {
-	/* CPLD interface is three bits, SGPIO[15:13]:
-	 * 111: decimate by 1 (skip_n=0, skip no samples)
-	 * 110: decimate by 2 (skip_n=1, skip every other sample)
-	 * 101: decimate by 3 (skip_n=2, skip two of three samples)
-	 * ...
-	 * 000: decimate by 8 (skip_n=7, skip seven of eight samples)
-	 */
-	const uint_fast8_t skip_n = n - 1;
-	gpio_write(config->gpio_rx_decimation[0], (skip_n & 1) == 0);
-	gpio_write(config->gpio_rx_decimation[1], (skip_n & 2) == 0);
-	gpio_write(config->gpio_rx_decimation[2], (skip_n & 4) == 0);
-
-	return (skip_n < 8);
-}
 
 #ifdef RAD1O
 /* The rad1o hardware has a bug which makes it

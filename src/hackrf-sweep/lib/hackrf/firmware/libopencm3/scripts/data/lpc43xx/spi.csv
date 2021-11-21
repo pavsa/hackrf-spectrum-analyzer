@@ -1,0 +1,21 @@
+SPI_CR,2,1,BITENABLE,Bit length enable,0,rw
+SPI_CR,3,1,CPHA,Clock phase control,0,rw
+SPI_CR,4,1,CPOL,Clock polarity control,0,rw
+SPI_CR,5,1,MSTR,Master mode select,0,rw
+SPI_CR,6,1,LSBF,LSB first,0,rw
+SPI_CR,7,1,SPIE,Serial peripheral interrupt enable,0,rw
+SPI_CR,8,4,BITS,Bits per transfer,0,rw
+SPI_SR,3,1,ABRT,Slave abort,0,ro
+SPI_SR,4,1,MODF,Mode fault,0,ro
+SPI_SR,5,1,ROVR,Read overrun,0,ro
+SPI_SR,6,1,WCOL,Write collision,0,ro
+SPI_SR,7,1,SPIF,Transfer complete,0,ro
+SPI_DR,0,16,DATA,Bi-directional data port,0,rw
+SPI_CCR,0,8,COUNTER,Clock counter setting,0,rw
+SPI_TCR,1,7,TEST,Test mode,0,rw
+SPI_TSR,3,1,ABRT,Slave abort,0,rw
+SPI_TSR,4,1,MODF,Mode fault,0,rw
+SPI_TSR,5,1,ROVR,Read overrun,0,rw
+SPI_TSR,6,1,WCOL,Write collision,0,rw
+SPI_TSR,7,1,SPIF,Transfer complete,0,rw
+SPI_CR,0,1,SPIF,Interrupt,0,rw

@@ -1,0 +1,331 @@
+!!omap
+- RTC_ILR:
+    fields: !!omap
+    - RTCCIF:
+        access: w
+        description: Counter increment interrupt block interrupted
+        lsb: 0
+        reset_value: '0'
+        width: 1
+    - RTCALF:
+        access: w
+        description: Alarm interrupted
+        lsb: 1
+        reset_value: '0'
+        width: 1
+- RTC_CCR:
+    fields: !!omap
+    - CLKEN:
+        access: rw
+        description: Clock enable
+        lsb: 0
+        reset_value: ''
+        width: 1
+    - CTCRST:
+        access: rw
+        description: CTC reset
+        lsb: 1
+        reset_value: '0'
+        width: 1
+    - CCALEN:
+        access: rw
+        description: Calibration counter enable
+        lsb: 4
+        reset_value: ''
+        width: 1
+- RTC_CIIR:
+    fields: !!omap
+    - IMSEC:
+        access: rw
+        description: Second interrupt enable
+        lsb: 0
+        reset_value: '0'
+        width: 1
+    - IMMIN:
+        access: rw
+        description: Minute interrupt enable
+        lsb: 1
+        reset_value: '0'
+        width: 1
+    - IMHOUR:
+        access: rw
+        description: Hour interrupt enable
+        lsb: 2
+        reset_value: '0'
+        width: 1
+    - IMDOM:
+        access: rw
+        description: Day of month interrupt enable
+        lsb: 3
+        reset_value: '0'
+        width: 1
+    - IMDOW:
+        access: rw
+        description: Day of week interrupt enable
+        lsb: 4
+        reset_value: '0'
+        width: 1
+    - IMDOY:
+        access: rw
+        description: Day of year interrupt enable
+        lsb: 5
+        reset_value: '0'
+        width: 1
+    - IMMON:
+        access: rw
+        description: Month interrupt enable
+        lsb: 6
+        reset_value: '0'
+        width: 1
+    - IMYEAR:
+        access: rw
+        description: Year interrupt enable
+        lsb: 7
+        reset_value: '0'
+        width: 1
+- RTC_AMR:
+    fields: !!omap
+    - AMRSEC:
+        access: rw
+        description: Second not compared for alarm
+        lsb: 0
+        reset_value: '0'
+        width: 1
+    - AMRMIN:
+        access: rw
+        description: Minute not compared for alarm
+        lsb: 1
+        reset_value: '0'
+        width: 1
+    - AMRHOUR:
+        access: rw
+        description: Hour not compared for alarm
+        lsb: 2
+        reset_value: '0'
+        width: 1
+    - AMRDOM:
+        access: rw
+        description: Day of month not compared for alarm
+        lsb: 3
+        reset_value: '0'
+        width: 1
+    - AMRDOW:
+        access: rw
+        description: Day of week not compared for alarm
+        lsb: 4
+        reset_value: '0'
+        width: 1
+    - AMRDOY:
+        access: rw
+        description: Day of year not compared for alarm
+        lsb: 5
+        reset_value: '0'
+        width: 1
+    - AMRMON:
+        access: rw
+        description: Month not compared for alarm
+        lsb: 6
+        reset_value: '0'
+        width: 1
+    - AMRYEAR:
+        access: rw
+        description: Year not compared for alarm
+        lsb: 7
+        reset_value: '0'
+        width: 1
+- RTC_CTIME0:
+    fields: !!omap
+    - SECONDS:
+        access: r
+        description: Seconds
+        lsb: 0
+        reset_value: ''
+        width: 6
+    - MINUTES:
+        access: r
+        description: Minutes
+        lsb: 8
+        reset_value: ''
+        width: 6
+    - HOURS:
+        access: r
+        description: Hours
+        lsb: 16
+        reset_value: ''
+        width: 5
+    - DOW:
+        access: r
+        description: Day of week
+        lsb: 24
+        reset_value: ''
+        width: 3
+- RTC_CTIME1:
+    fields: !!omap
+    - DOM:
+        access: r
+        description: Day of month
+        lsb: 0
+        reset_value: ''
+        width: 5
+    - MONTH:
+        access: r
+        description: Month
+        lsb: 8
+        reset_value: ''
+        width: 4
+    - YEAR:
+        access: r
+        description: Year
+        lsb: 16
+        reset_value: ''
+        width: 12
+- RTC_CTIME2:
+    fields: !!omap
+    - DOY:
+        access: r
+        description: Day of year
+        lsb: 0
+        reset_value: ''
+        width: 12
+- RTC_SEC:
+    fields: !!omap
+    - SECONDS:
+        access: rw
+        description: Seconds
+        lsb: 0
+        reset_value: ''
+        width: 6
+- RTC_MIN:
+    fields: !!omap
+    - MINUTES:
+        access: rw
+        description: Minutes
+        lsb: 0
+        reset_value: ''
+        width: 6
+- RTC_HRS:
+    fields: !!omap
+    - HOURS:
+        access: rw
+        description: Hours
+        lsb: 0
+        reset_value: ''
+        width: 5
+- RTC_DOM:
+    fields: !!omap
+    - DOM:
+        access: rw
+        description: Day of month
+        lsb: 0
+        reset_value: ''
+        width: 5
+- RTC_DOW:
+    fields: !!omap
+    - DOW:
+        access: rw
+        description: Day of week
+        lsb: 0
+        reset_value: ''
+        width: 3
+- RTC_DOY:
+    fields: !!omap
+    - DOY:
+        access: rw
+        description: Day of year
+        lsb: 0
+        reset_value: ''
+        width: 9
+- RTC_MONTH:
+    fields: !!omap
+    - MONTH:
+        access: rw
+        description: Month
+        lsb: 0
+        reset_value: ''
+        width: 4
+- RTC_YEAR:
+    fields: !!omap
+    - YEAR:
+        access: rw
+        description: Year
+        lsb: 0
+        reset_value: ''
+        width: 12
+- RTC_CALIBRATION:
+    fields: !!omap
+    - CALVAL:
+        access: rw
+        description: Calibration counter max
+        lsb: 0
+        reset_value: ''
+        width: 17
+    - CALDIR:
+        access: rw
+        description: Calibration counter direction
+        lsb: 17
+        reset_value: ''
+        width: 1
+- RTC_ASEC:
+    fields: !!omap
+    - SECONDS:
+        access: rw
+        description: Alarm seconds
+        lsb: 0
+        reset_value: ''
+        width: 6
+- RTC_AMIN:
+    fields: !!omap
+    - MINUTES:
+        access: rw
+        description: Alarm minutes
+        lsb: 0
+        reset_value: ''
+        width: 6
+- RTC_AHRS:
+    fields: !!omap
+    - HOURS:
+        access: rw
+        description: Alarm hours
+        lsb: 0
+        reset_value: ''
+        width: 5
+- RTC_ADOM:
+    fields: !!omap
+    - DOM:
+        access: rw
+        description: Alarm day of month
+        lsb: 0
+        reset_value: ''
+        width: 5
+- RTC_ADOW:
+    fields: !!omap
+    - DOW:
+        access: rw
+        description: Alarm day of week
+        lsb: 0
+        reset_value: ''
+        width: 3
+- RTC_ADOY:
+    fields: !!omap
+    - DOY:
+        access: rw
+        description: Alarm day of year
+        lsb: 0
+        reset_value: ''
+        width: 9
+- RTC_AMON:
+    fields: !!omap
+    - MONTH:
+        access: rw
+        description: Alarm month
+        lsb: 0
+        reset_value: ''
+        width: 4
+- RTC_AYRS:
+    fields: !!omap
+    - YEAR:
+        access: rw
+        description: Alarm year
+        lsb: 0
+        reset_value: ''
+        width: 12

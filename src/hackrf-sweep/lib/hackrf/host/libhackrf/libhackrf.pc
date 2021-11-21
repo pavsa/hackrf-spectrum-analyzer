@@ -1,0 +1,11 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: HackRF Library
+Description: C Utility Library
+Version: 0.6
+Cflags: -I${includedir} -I${includedir}/libhackrf -I/usr/local/Cellar/libusb/1.0.24/include/libusb-1.0
+Libs: -L${libdir} -lhackrf
+Libs.private: 

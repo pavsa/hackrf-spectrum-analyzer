@@ -1,0 +1,139 @@
+!!omap
+- SPI_CR:
+    fields: !!omap
+    - BITENABLE:
+        access: rw
+        description: Bit length enable
+        lsb: 2
+        reset_value: '0'
+        width: 1
+    - CPHA:
+        access: rw
+        description: Clock phase control
+        lsb: 3
+        reset_value: '0'
+        width: 1
+    - CPOL:
+        access: rw
+        description: Clock polarity control
+        lsb: 4
+        reset_value: '0'
+        width: 1
+    - MSTR:
+        access: rw
+        description: Master mode select
+        lsb: 5
+        reset_value: '0'
+        width: 1
+    - LSBF:
+        access: rw
+        description: LSB first
+        lsb: 6
+        reset_value: '0'
+        width: 1
+    - SPIE:
+        access: rw
+        description: Serial peripheral interrupt enable
+        lsb: 7
+        reset_value: '0'
+        width: 1
+    - BITS:
+        access: rw
+        description: Bits per transfer
+        lsb: 8
+        reset_value: '0'
+        width: 4
+    - SPIF:
+        access: rw
+        description: Interrupt
+        lsb: 0
+        reset_value: '0'
+        width: 1
+- SPI_SR:
+    fields: !!omap
+    - ABRT:
+        access: ro
+        description: Slave abort
+        lsb: 3
+        reset_value: '0'
+        width: 1
+    - MODF:
+        access: ro
+        description: Mode fault
+        lsb: 4
+        reset_value: '0'
+        width: 1
+    - ROVR:
+        access: ro
+        description: Read overrun
+        lsb: 5
+        reset_value: '0'
+        width: 1
+    - WCOL:
+        access: ro
+        description: Write collision
+        lsb: 6
+        reset_value: '0'
+        width: 1
+    - SPIF:
+        access: ro
+        description: Transfer complete
+        lsb: 7
+        reset_value: '0'
+        width: 1
+- SPI_DR:
+    fields: !!omap
+    - DATA:
+        access: rw
+        description: Bi-directional data port
+        lsb: 0
+        reset_value: '0'
+        width: 16
+- SPI_CCR:
+    fields: !!omap
+    - COUNTER:
+        access: rw
+        description: Clock counter setting
+        lsb: 0
+        reset_value: '0'
+        width: 8
+- SPI_TCR:
+    fields: !!omap
+    - TEST:
+        access: rw
+        description: Test mode
+        lsb: 1
+        reset_value: '0'
+        width: 7
+- SPI_TSR:
+    fields: !!omap
+    - ABRT:
+        access: rw
+        description: Slave abort
+        lsb: 3
+        reset_value: '0'
+        width: 1
+    - MODF:
+        access: rw
+        description: Mode fault
+        lsb: 4
+        reset_value: '0'
+        width: 1
+    - ROVR:
+        access: rw
+        description: Read overrun
+        lsb: 5
+        reset_value: '0'
+        width: 1
+    - WCOL:
+        access: rw
+        description: Write collision
+        lsb: 6
+        reset_value: '0'
+        width: 1
+    - SPIF:
+        access: rw
+        description: Transfer complete
+        lsb: 7
+        reset_value: '0'
+        width: 1

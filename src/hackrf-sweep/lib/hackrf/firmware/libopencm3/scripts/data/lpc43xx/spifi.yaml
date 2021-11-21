@@ -1,0 +1,209 @@
+!!omap
+- SPIFI_CTRL:
+    fields: !!omap
+    - TIMEOUT:
+        access: rw
+        description: Memory mode idle timeout
+        lsb: 0
+        reset_value: '0xffff'
+        width: 16
+    - CSHIGH:
+        access: rw
+        description: Minimum CS# high time
+        lsb: 16
+        reset_value: '15'
+        width: 4
+    - D_PRFTCH_DIS:
+        access: rw
+        description: Disable speculative prefetch
+        lsb: 21
+        reset_value: '0'
+        width: 1
+    - INTEN:
+        access: rw
+        description: Enable command end interrupt
+        lsb: 22
+        reset_value: '0'
+        width: 1
+    - MODE3:
+        access: rw
+        description: SPI mode 3 select
+        lsb: 23
+        reset_value: '0'
+        width: 1
+    - PRFTCH_DIS:
+        access: rw
+        description: Disable prefetching of cache lines
+        lsb: 27
+        reset_value: '0'
+        width: 1
+    - DUAL:
+        access: rw
+        description: Select dual protocol
+        lsb: 28
+        reset_value: '0'
+        width: 1
+    - RFCLK:
+        access: rw
+        description: Read data on falling edge
+        lsb: 29
+        reset_value: '0'
+        width: 1
+    - FBCLK:
+        access: rw
+        description: Feedback clock select
+        lsb: 30
+        reset_value: '1'
+        width: 1
+    - DMAEN:
+        access: rw
+        description: DMA request output enable
+        lsb: 31
+        reset_value: '0'
+        width: 1
+- SPIFI_CMD:
+    fields: !!omap
+    - DATALEN:
+        access: rw
+        description: Data bytes in command
+        lsb: 0
+        reset_value: '0'
+        width: 14
+    - POLL:
+        access: rw
+        description: Poll at end of command
+        lsb: 14
+        reset_value: '0'
+        width: 1
+    - DOUT:
+        access: rw
+        description: Data output to serial flash
+        lsb: 15
+        reset_value: '0'
+        width: 1
+    - INTLEN:
+        access: rw
+        description: Intermediate bytes before data
+        lsb: 16
+        reset_value: '0'
+        width: 3
+    - FIELDFORM:
+        access: rw
+        description: Form of command fields
+        lsb: 19
+        reset_value: '0'
+        width: 2
+    - FRAMEFORM:
+        access: rw
+        description: Form of the opcode/address fields
+        lsb: 21
+        reset_value: '0'
+        width: 3
+    - OPCODE:
+        access: rw
+        description: Command opcode
+        lsb: 24
+        reset_value: '0'
+        width: 8
+- SPIFI_ADDR:
+    fields: !!omap
+    - ADDRESS:
+        access: rw
+        description: Address field value
+        lsb: 0
+        reset_value: '0'
+        width: 32
+- SPIFI_IDATA:
+    fields: !!omap
+    - IDATA:
+        access: rw
+        description: Intermediate bytes value
+        lsb: 0
+        reset_value: '0'
+        width: 32
+- SPIFI_CLIMIT:
+    fields: !!omap
+    - CLIMIT:
+        access: rw
+        description: Upper limit of cacheable memory
+        lsb: 0
+        reset_value: '0x08000000'
+        width: 32
+- SPIFI_DATA:
+    fields: !!omap
+    - DATA:
+        access: rw
+        description: Input or output data
+        lsb: 0
+        reset_value: '0'
+        width: 32
+- SPIFI_MCMD:
+    fields: !!omap
+    - POLL:
+        access: rw
+        description: Must be zero
+        lsb: 14
+        reset_value: '0'
+        width: 1
+    - DOUT:
+        access: rw
+        description: Must be zero
+        lsb: 15
+        reset_value: '0'
+        width: 1
+    - INTLEN:
+        access: rw
+        description: Intermediate bytes before data
+        lsb: 16
+        reset_value: '0'
+        width: 3
+    - FIELDFORM:
+        access: rw
+        description: Form of command fields
+        lsb: 19
+        reset_value: '0'
+        width: 2
+    - FRAMEFORM:
+        access: rw
+        description: Form of the opcode/address fields
+        lsb: 21
+        reset_value: '0'
+        width: 3
+    - OPCODE:
+        access: rw
+        description: Command opcode
+        lsb: 24
+        reset_value: '0'
+        width: 8
+- SPIFI_STAT:
+    fields: !!omap
+    - MCINIT:
+        access: rw
+        description: Memory command initialized
+        lsb: 0
+        reset_value: '0'
+        width: 1
+    - CMD:
+        access: rw
+        description: Command active
+        lsb: 1
+        reset_value: '0'
+        width: 1
+    - RESET:
+        access: rw
+        description: Abort current command/memory mode
+        lsb: 4
+        reset_value: '0'
+        width: 1
+    - INTRQ:
+        access: rw
+        description: Interrupt request status
+        lsb: 5
+        reset_value: '0'
+        width: 1
+    - VERSION:
+        access: rw
+        description: Peripheral hardware version
+        lsb: 24
+        reset_value: '0x02'
+        width: 8
