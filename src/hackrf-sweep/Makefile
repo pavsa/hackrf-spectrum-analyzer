@@ -83,7 +83,7 @@ ZIP_FILE_PATH				= $(OUTPUT_DLL_DIR)/../../$(ZIP_FILE)
 .NOTPARALLEL: all
 .PHONY: all
 
-all: prepare $(MAIN_JAR) $(DLL_LIB) $(ZIP_FILE_PATH)
+all: prepare jnabridge $(MAIN_JAR) $(DLL_LIB) $(ZIP_FILE_PATH)
 
 .PHONY: dirs
 dirs:
@@ -105,9 +105,9 @@ $(ZIP_FILE_PATH): $(DLL_LIB) $(DLL_LIB_WIN)
 prepare: dirs $(OBJECTS) $(OBJECTS_WIN) $(DLL_LIB_FFTW)
 	mkdir -p $(OUTPUT_DLL_DIR) $(OUTPUT_DLL_DIR_WIN)	
 	cp -f lib/program.ico lib/program.png $(OUTPUT_DLL_DIR)/../
-	cp lib/launchers/hackrf_sweep_spectrum_analyzer_linux.sh $(OUTPUT_PATH)
+	cp lib/launchers/hackrf_sweep_spectrum_analyzer_unix.sh $(OUTPUT_PATH)
 	cp lib/launchers/hackrf_sweep_spectrum_analyzer_windows.cmd $(OUTPUT_PATH)
-	chmod +x $(OUTPUT_PATH)/hackrf_sweep_spectrum_analyzer_linux.sh #linux launcher
+	chmod +x $(OUTPUT_PATH)/hackrf_sweep_spectrum_analyzer_unix.sh
 	cp -f $(DLL_LIB_FFTW) $(DLL_LIB_PTHREAD) $(DLL_LIB_USB) $(OUTPUT_DLL_DIR_WIN)
 	cp -f lib/zadig-2.5.exe $(OUTPUT_DLL_DIR_WIN)/../
 
