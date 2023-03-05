@@ -81,7 +81,7 @@ ZIP_FILE_PATH				= $(OUTPUT_DLL_DIR)/../../$(ZIP_FILE)
 .NOTPARALLEL: all
 .PHONY: all
 
-all: prepare $(MAIN_JAR) $(DLL_LIB) $(ZIP_FILE_PATH)
+all: patch_hackrf prepare $(MAIN_JAR) $(DLL_LIB) $(ZIP_FILE_PATH)
 
 .PHONY: dirs
 dirs:
@@ -99,6 +99,11 @@ $(ZIP_FILE_PATH): $(DLL_LIB) $(DLL_LIB_WIN)
 	cd $(OUTPUT_DLL_DIR)/../../ && rm -rf $(ZIP_FILE) &&  zip -r $(ZIP_FILE)  *
 	yes | cp -rf $(ZIP_FILE_PATH) $(RELEASE_DIR)
 
+.PHONY: patch_hackrf
+patch_hackrf:
+	# format the src # clang-format --style=file:../../../.clang-format -i hackrf_sweep.c
+	(cd lib/hackrf/ && git reset --hard v2023.01.1 && git apply < ../../src-c/0001-hackrf_sweep-to-library-conversion.patch)
+
 .PHONY: prepare
 prepare: dirs $(OBJECTS) $(OBJECTS_WIN) $(DLL_LIB_FFTW)
 	mkdir -p $(OUTPUT_DLL_DIR) $(OUTPUT_DLL_DIR_WIN)	
@@ -107,7 +112,6 @@ prepare: dirs $(OBJECTS) $(OBJECTS_WIN) $(DLL_LIB_FFTW)
 	cp lib/launchers/hackrf_sweep_spectrum_analyzer_windows.cmd $(OUTPUT_PATH)
 	chmod +x $(OUTPUT_PATH)/hackrf_sweep_spectrum_analyzer_linux.sh #linux launcher
 	cp -f $(DLL_LIB_FFTW) $(DLL_LIB_PTHREAD) $(DLL_LIB_USB) $(OUTPUT_DLL_DIR_WIN)
-	cp -f lib/zadig-2.5.exe $(OUTPUT_DLL_DIR_WIN)/../
 
 # if native header in hackrf lib changes, rebuild with "make jnabridge" - but openjdk-8 is required - jnaerator does not work with jdk9+
 .PHONY: jnabridge

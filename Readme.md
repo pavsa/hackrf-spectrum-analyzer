@@ -17,7 +17,8 @@ Linux: read Installation section below
 - hackrf_sweep integrated as a shared library
 
 ### Requirements:
-* HackRF One with [Firmware 2017.02.1](https://github.com/mossmann/hackrf/releases/tag/v2017.02.1) or newer (use linux inside virtual machine to [update the firmware](https://github.com/mossmann/hackrf/wiki/Updating-Firmware)) 
+* HackRF One with [Firmware 2023.01.1](https://github.com/mossmann/hackrf/releases/tag/v2023.01.1) or newer  
+(use linux inside VM and [update the firmware](https://hackrf.readthedocs.io/en/latest/updating_firmware.html)) 
 
 ### Installation:
 Make sure HackRF is using at least the minimum firmware version (see above) 
@@ -27,7 +28,7 @@ Windows:
 1. Install Java JRE 64bit v1.8+
 1. [Download the latest version of Spectrum Analyzer](https://github.com/pavsa/hackrf-spectrum-analyzer/releases) and unzip
 1. Install HackRF as a libusb device
-  1. [Download Zadig](src/hackrf-sweep/lib/zadig_2.2.exe) and run
+  1. [Download Zadig](https://zadig.akeo.ie/) and install
   2. Goto Options and check List All Devices
   3. Find "HackRF One" and select Driver "WinUSB" and click install
 1. Install (if you don't have one installed) [Java JRE for Windows x64](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html) 

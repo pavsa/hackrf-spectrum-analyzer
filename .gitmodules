@@ -1,0 +1,4 @@
+[submodule "src/hackrf-sweep/lib/hackrf"]
+	path = src/hackrf-sweep/lib/hackrf
+	url = https://github.com/greatscottgadgets/hackrf.git
+	ignore = dirty
