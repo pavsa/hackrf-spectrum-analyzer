@@ -48,7 +48,7 @@ If something does not work, you can try to build it manually.
 Building native libraries for Windows (using mingw-w64) and linux is done in one unified build using Ubuntu 18.04 x64.  
 1. You'll need to install these packages:  
 `sudo apt install build-essential ant git libusb-1.0 libfftw3-bin libfftw3-dev default-jdk mingw-w64`
-1. `git clone --depth=1 https://github.com/pavsa/hackrf-spectrum-analyzer.git` 
+1. `git clone --recurse-submodules --depth=1 https://github.com/pavsa/hackrf-spectrum-analyzer.git` 
 1. `cd hackrf-spectrum-analyzer/src/hackrf-sweep/`
 1. `make`
 1. To run, simply execute: `build/hackrf_sweep_spectrum_analyzer_linux.sh`
