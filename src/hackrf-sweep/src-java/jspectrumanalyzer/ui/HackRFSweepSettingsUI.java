@@ -93,12 +93,44 @@ public class HackRFSweepSettingsUI extends JPanel
 		setForeground(Color.WHITE);
 		setBackground(Color.BLACK);
 		int minFreq = 1;
-		int maxFreq = 7250;
+		int maxFreq = 3000;
 		int freqStep = 1;
 
-		JPanel panelMainSettings	= new JPanel(new MigLayout("", "[123.00px,grow,leading]", "[][][::0px][][]"));
+		JPanel panelMainSettings	= new JPanel(new MigLayout("", "[60.00px,grow,leading]", "[][][::0px][][]"));
 		panelMainSettings.setBorder(new EmptyBorder(UIManager.getInsets("TabbedPane.tabAreaInsets")));;
 		panelMainSettings.setBackground(Color.BLACK);
+
+	JPanel buttons1	= new JPanel();
+		buttons1.setBackground(Color.BLACK);
+
+		JPanel buttons2	= new JPanel();
+		buttons2.setBackground(Color.BLACK);
+
+		JButton button_setting1 = new JButton("1");
+		button_setting1.setBackground(Color.BLACK);
+
+		button_setting1.addActionListener(e -> { frequencySelectorStart.setValue(200); frequencySelectorEnd.setValue(500);});
+		buttons1.add(button_setting1);
+
+		JButton button_setting2 = new JButton("2");
+		button_setting2.setBackground(Color.BLACK);
+		button_setting2.addActionListener(e -> { frequencySelectorStart.setValue(700); frequencySelectorEnd.setValue(1025);});
+		buttons1.add(button_setting2);
+
+		JButton button_setting3 = new JButton("3");
+		button_setting3.setBackground(Color.BLACK);
+		button_setting3.addActionListener(e -> { frequencySelectorStart.setValue(1000); frequencySelectorEnd.setValue(1450);});
+		buttons1.add(button_setting3);
+
+		JButton button_setting4 = new JButton("4");
+		button_setting4.setBackground(Color.BLACK);
+		button_setting4.addActionListener(e -> { frequencySelectorStart.setValue(2179); frequencySelectorEnd.setValue(2560);});
+		buttons1.add(button_setting4);
+
+        panelMainSettings.add(buttons1, "cell 0 0,aligny center");
+		panelMainSettings.add(buttons2, "cell 0 1,aligny center");
+
+
 		JLabel lblNewLabel = new JLabel("Frequency start [MHz]");
 		lblNewLabel.setForeground(Color.WHITE);
 		panelMainSettings.add(lblNewLabel, "cell 0 0,growx,aligny center");
@@ -135,11 +167,11 @@ public class HackRFSweepSettingsUI extends JPanel
 		tabbedPane.setForeground(Color.WHITE);
 		tabbedPane.setBackground(Color.BLACK);
 
-		JPanel tab1	= new JPanel(new MigLayout("", "[123.00px,grow,leading]", "[][][0][][][0][][][0][][][0][][][0][][0][][grow,fill]"));
+		JPanel tab1	= new JPanel(new MigLayout("", "[60.00px,grow,leading]", "[][][0][][][0][][][0][][][0][][][0][][0][][grow,fill]"));
 		tab1.setForeground(Color.WHITE);
 		tab1.setBackground(Color.BLACK);
 		
-		JPanel tab2	= new JPanel(new MigLayout("", "[123.00px,grow,leading]", "[][0][][][0][][][0][][0][][][0][][0][][][0][0][][][0][][0][grow,fill]"));
+		JPanel tab2	= new JPanel(new MigLayout("", "[60.00px,grow,leading]", "[][0][][][0][][][0][][0][][][0][][0][][][0][0][][][0][][0][grow,fill]"));
 		tab2.setForeground(Color.WHITE);
 		tab2.setBackground(Color.BLACK);
 		
