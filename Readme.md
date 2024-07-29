@@ -59,3 +59,4 @@ Building native libraries for Windows (using mingw-w64) and linux is done in one
 
 ### License:
 GPL v3 
+
