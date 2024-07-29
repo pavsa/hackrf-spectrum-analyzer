@@ -220,17 +220,17 @@ public class HackRFSweepSpectrumAnalyzer implements HackRFSettings, HackRFSweepD
 	private ModelValue<FrequencyAllocationTable>	parameterFrequencyAllocationTable	= new ModelValue<FrequencyAllocationTable>("Frequency allocation table", null);
 
 	private ModelValueInt							parameterGainLNA					= new ModelValueInt("LNA Gain",0, 8, 0, 40);
-	private ModelValueInt							parameterGainTotal					= new ModelValueInt("Gain [dB]", 40);
+	private ModelValueInt							parameterGainTotal					= new ModelValueInt("Gain [dB]", 70);
 	private ModelValueInt							parameterGainVGA					= new ModelValueInt("VGA Gain", 0, 2, 0, 60);
 	private ModelValueBoolean						parameterIsCapturingPaused			= new ModelValueBoolean("Capturing paused", false);
 
 	private ModelValueInt							parameterPersistentDisplayPersTime  = new ModelValueInt("Persistence time", 30, 1, 1, 60);
-	private ModelValueInt							parameterPeakFallRateSecs			= new ModelValueInt("Peak fall rate", 30);
-	private ModelValueBoolean						parameterPersistentDisplay			= new ModelValueBoolean("Persistent display", false);
+	private ModelValueInt							parameterPeakFallRateSecs			= new ModelValueInt("Peak fall rate", 3);
+	private ModelValueBoolean						parameterPersistentDisplay			= new ModelValueBoolean("Persistent display", true);
 
 	private ModelValueInt							parameterSamples					= new ModelValueInt("Samples", 8192);
 
-	private ModelValueBoolean						parameterShowPeaks					= new ModelValueBoolean("Show peaks", false);
+	private ModelValueBoolean						parameterShowPeaks					= new ModelValueBoolean("Show peaks", true);
 
 	private ModelValueBoolean 						parameterDebugDisplay				= new ModelValueBoolean("Debug", false);
 	
