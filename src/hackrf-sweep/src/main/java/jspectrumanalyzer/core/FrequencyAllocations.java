@@ -23,8 +23,8 @@ public class FrequencyAllocations {
 	}
 
 	private void loadEurope() {
-		loadTableFromCSV("Europe", getClass().getResourceAsStream("/resources/freq-europe.csv"));		
-		loadTableFromCSV("USA", getClass().getResourceAsStream("/resources/freq-usa.csv"));
+		loadTableFromCSV("Europe", getClass().getResourceAsStream("/freq-europe.csv"));		
+		loadTableFromCSV("USA", getClass().getResourceAsStream("/freq-usa.csv"));
 	}
 	
 	private void loadTableFromCSV(String locationName, InputStream is) {

@@ -11,7 +11,7 @@
     	<copy todir="../bin">
     	    <fileset dir="../src-java" includes="**/*.csv" />
     	</copy>
-        <javac srcdir="../src-java" destdir="../bin">
+        <javac target="1.8" source="1.8" srcdir="../src-java" destdir="../bin">
         	<classpath>
         	        <pathelement path="../miglayout15-swing.jar"/>
         			<pathelement path="jcommon-1.0.17.jar"/>

@@ -17,7 +17,7 @@ Linux: read Installation section below
 - hackrf_sweep integrated as a shared library
 
 ### Requirements:
-* HackRF One with [Firmware 2023.01.1](https://github.com/mossmann/hackrf/releases/tag/v2023.01.1) or newer  
+* HackRF One with [Firmware v2024.02.1](https://github.com/greatscottgadgets/hackrf/releases/tag/v2024.02.1)
 (use linux inside VM and [update the firmware](https://hackrf.readthedocs.io/en/latest/updating_firmware.html)) 
 
 ### Installation:
@@ -25,13 +25,12 @@ Make sure HackRF is using at least the minimum firmware version (see above)
 
 Windows:  
 1. Windows 7+ x64 required 
-1. Install Java JRE 64bit v1.8+
+1. Install OpenJDK 8 or later [e.g. from Microsoft](https://www.microsoft.com/openjdk)
 1. [Download the latest version of Spectrum Analyzer](https://github.com/pavsa/hackrf-spectrum-analyzer/releases) and unzip
-1. Install HackRF as a libusb device
+1. On Windows 10 or less, install HackRF as a libusb device (__for Windows 11 not required__)
   1. [Download Zadig](https://zadig.akeo.ie/) and install
   2. Goto Options and check List All Devices
   3. Find "HackRF One" and select Driver "WinUSB" and click install
-1. Install (if you don't have one installed) [Java JRE for Windows x64](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html) 
 1. Run "hackrf_sweep_spectrum_analyzer_windows.cmd"
 
 Linux:  
@@ -47,8 +46,8 @@ If something does not work, you can try to build it manually.
 ### Building  
 Building native libraries for Windows (using mingw-w64) and linux is done in one unified build using Ubuntu 18.04 x64.  
 1. You'll need to install these packages:  
-`sudo apt install build-essential ant git libusb-1.0 libfftw3-bin libfftw3-dev default-jdk mingw-w64`
-1. `git clone --depth=1 https://github.com/pavsa/hackrf-spectrum-analyzer.git` 
+`sudo apt install build-essential maven git libusb-1.0 libfftw3-bin libfftw3-dev default-jdk mingw-w64`
+1. `git clone --recurse-submodules --depth=1 https://github.com/pavsa/hackrf-spectrum-analyzer.git`
 1. `cd hackrf-spectrum-analyzer/src/hackrf-sweep/`
 1. `make`
 1. To run, simply execute: `build/hackrf_sweep_spectrum_analyzer_linux.sh`

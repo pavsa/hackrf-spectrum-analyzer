@@ -8,7 +8,7 @@ IS_RELEASE					= y
 # object files path
 BUILD_PATH 					= obj
 # build output 
-OUTPUT_PATH					= build
+OUTPUT_PATH					= build/hackrf-spectrum-analyzer
 #where the resulting release zip will be copied
 RELEASE_DIR					= ../../release/
 
@@ -25,8 +25,8 @@ MAIN_JAR					= $(OUTPUT_PATH)/lib/hackrf_sweep_spectrum_analyzer.jar
 OBJECT_SUFFIX				= o
 OBJECT_SUFFIX_WIN			= ow
 				 
-OBJECTS						= $(addsuffix .$(OBJECT_SUFFIX), $(addprefix $(BUILD_PATH)/, $(SOURCES))) 						
-OBJECTS_WIN					= $(addsuffix .$(OBJECT_SUFFIX_WIN), $(addprefix $(BUILD_PATH)/, $(SOURCES))) 						
+OBJECTS						= $(addsuffix .$(OBJECT_SUFFIX), $(addprefix $(BUILD_PATH)/, $(SOURCES)))
+OBJECTS_WIN					= $(addsuffix .$(OBJECT_SUFFIX_WIN), $(addprefix $(BUILD_PATH)/, $(SOURCES)))
 
 CFLAGS						= -DHACKRF_SWEEP_AS_LIBRARY -c -fPIC
 LDFLAGS						=  -shared 
@@ -75,13 +75,13 @@ LIB_DIR						= linux-x86-64
 
 JNAERATOR					= $(CURDIR)/lib/jnaerator/jnaerator-0.13-20150328.111636-4-shaded.jar
 ZIP_FILE					= hackrf_spectrum_analyzer.zip
-ZIP_FILE_PATH				= $(OUTPUT_DLL_DIR)/../../$(ZIP_FILE)
+ZIP_FILE_PATH				= $(OUTPUT_PATH)/../
 
 
 .NOTPARALLEL: all
 .PHONY: all
 
-all: patch_hackrf prepare $(MAIN_JAR) $(DLL_LIB) $(ZIP_FILE_PATH)
+all: patch_hackrf prepare $(MAIN_JAR) $(DLL_LIB) zip_file
 
 .PHONY: dirs
 dirs:
@@ -89,20 +89,20 @@ dirs:
 	@mkdir -p $(dir $(OBJECTS))
 
 $(MAIN_JAR):
-	echo "running ant..."
-	ant -buildfile lib/hackrf_sweep_spectral_analyzer_buildjar_ant.xml compile
-	ant -buildfile lib/hackrf_sweep_spectral_analyzer_buildjar_ant.xml create_run_jar
-	echo "running ant... done"
-	
-$(ZIP_FILE_PATH): $(DLL_LIB) $(DLL_LIB_WIN)
+	mvn clean compile assembly:single
+	mv build/*.jar $(OUTPUT_PATH)/lib/
+
+.PHONY: zip_file
+zip_file: $(DLL_LIB) $(DLL_LIB_WIN)
 	mkdir -p $(RELEASE_DIR)
-	cd $(OUTPUT_DLL_DIR)/../../ && rm -rf $(ZIP_FILE) &&  zip -r $(ZIP_FILE)  *
-	yes | cp -rf $(ZIP_FILE_PATH) $(RELEASE_DIR)
+	rm -f $(ZIP_FILE_PATH)/$(ZIP_FILE)
+	cd $(ZIP_FILE_PATH) && zip -r $(ZIP_FILE) *
+	yes | cp -rf $(ZIP_FILE_PATH)/$(ZIP_FILE) $(RELEASE_DIR) 
 
 .PHONY: patch_hackrf
 patch_hackrf:
 	# format the src # clang-format --style=file:../../../.clang-format -i hackrf_sweep.c
-	(cd lib/hackrf/ && git reset --hard v2023.01.1 && git apply < ../../src-c/0001-hackrf_sweep-to-library-conversion.patch)
+	(cd lib/hackrf/ && git reset --hard v2024.02.1 && git apply < ../../src-c/0001-hackrf_sweep-to-library-conversion-v2024.02.1.patch)
 
 .PHONY: prepare
 prepare: dirs $(OBJECTS) $(OBJECTS_WIN) $(DLL_LIB_FFTW)
@@ -117,7 +117,7 @@ prepare: dirs $(OBJECTS) $(OBJECTS_WIN) $(DLL_LIB_FFTW)
 .PHONY: jnabridge
 jnabridge: $(JNA_SWEEP_HEADER)
 	$(JDK_EXECUTABLE) -Xmx1024M -jar $(JNAERATOR) -limitComments -emptyStructsAsForwardDecls -f  -skipLibraryInstance -runtime JNA -direct  -mode Jar -o lib -jar $(JNA_LIB) -v -library "hackrf-sweep" $(JNA_SWEEP_HEADER)
-	unzip -p lib/hackrf-sweep-jna.jar hackrfsweep/HackrfSweepLibrary.java  > src-java/hackrfsweep/HackrfSweepLibrary.java
+	unzip -p lib/hackrf-sweep-jna.jar hackrfsweep/HackrfSweepLibrary.java  > src/main/java/hackrfsweep/HackrfSweepLibrary.java
 	rm lib/hackrf-sweep-jna.jar
 	#$(JDK_EXECUTABLE) -Xmx1024M -jar $(JNAERATOR) -limitComments -emptyStructsAsForwardDecls -f  -skipLibraryInstance -runtime JNA -direct  -mode Jar -o lib -jar libhackrf-jna.jar -v -library "hackrf-sweep"  $(CURDIR)/lib/hackrf/host/libhackrf/src/hackrf.h
 	rm -rf $(CURDIR)/_jnaerator.*
@@ -142,5 +142,6 @@ $(BUILD_PATH)/%.c.$(OBJECT_SUFFIX_WIN): %.c
 	
 .PHONY: clean
 clean:
+	mvn clean
 	rm -f  $(MAIN_JAR) $(OBJECTS) $(OBJECTS_WIN) $(DLL_LIB) $(DLL_LIB_WIN) # $(JNA_LIB)
-	rm -rf $(OUTPUT_DLL_DIR) $(BUILD_PATH) $(OUTPUT_PATH)/*	
+	rm -rf $(OUTPUT_DLL_DIR) $(BUILD_PATH) $(OUTPUT_PATH)/* bin/*	

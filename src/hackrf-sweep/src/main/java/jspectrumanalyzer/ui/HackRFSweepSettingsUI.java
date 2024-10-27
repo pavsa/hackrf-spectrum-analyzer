@@ -84,6 +84,11 @@ public class HackRFSweepSettingsUI extends JPanel
 	private JLabel lblDebugDisplay;
 	private JCheckBox checkBoxDebugDisplay;
 
+	public HackRFSweepSettingsUI()
+	{
+		this(null);
+	}
+	
 	/**
 	 * Create the panel.
 	 */
@@ -150,7 +155,7 @@ public class HackRFSweepSettingsUI extends JPanel
 
 		tabbedPane.setForegroundAt(0, Color.BLACK);
 		tabbedPane.setBackgroundAt(0, Color.WHITE);
-		
+
 		//tab1
 		{
 			JLabel lblGain = new JLabel("Gain [dB]");
@@ -226,19 +231,6 @@ public class HackRFSweepSettingsUI extends JPanel
 			((ListEditor) spinner_numberOfSamples.getEditor()).getTextField().setHorizontalAlignment(JTextField.RIGHT);
 			((ListEditor) spinner_numberOfSamples.getEditor()).getTextField().setEditable(false);
 			tab1.add(spinner_numberOfSamples, "cell 0 14,growx");
-
-			JButton btnAbout = new JButton("Visit homepage");
-			btnAbout.addActionListener(e -> {
-				 if (Desktop.isDesktopSupported()) {
-			            Desktop desktop = Desktop.getDesktop();
-			            try {
-			                URI uri = new URI(Version.url);
-			                desktop.browse(uri);
-			            } catch (Exception ex) {
-			                ex.printStackTrace();
-			            }
-			    }
-			});
 			
 			
 			JLabel lblAntennaPower = new JLabel("Antenna power output");
@@ -251,10 +243,24 @@ public class HackRFSweepSettingsUI extends JPanel
 			chckbxAntennaPower.setForeground(Color.WHITE);
 			tab1.add(chckbxAntennaPower, "cell 0 16,alignx right");
 			
-			Label labelVersion = new Label("Version: v"+Version.version);
+			Label labelVersion = new Label("Version: "+Version.version);
 			tab1.add(labelVersion, "flowx,cell 0 17");
+			
+			
+			JButton btnAbout = new JButton("Visit homepage");
+			btnAbout.addActionListener(e -> {
+				if (Desktop.isDesktopSupported()) {
+					Desktop desktop = Desktop.getDesktop();
+					try {
+						URI uri = new URI(Version.url);
+						desktop.browse(uri);
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+				}
+			});
 			btnAbout.setBackground(Color.BLACK);
-			tab1.add(btnAbout, "cell 0 17,alignx right");
+			tab1.add(btnAbout, "cell 0 18,alignx right");
 		}
 		
 		chckbxFilterSpectrum = new JCheckBox("Filter spectrum");
@@ -369,7 +375,8 @@ public class HackRFSweepSettingsUI extends JPanel
 		checkBoxDebugDisplay.setBackground(Color.BLACK);
 		tab2.add(checkBoxDebugDisplay, "cell 0 22,alignx right");
 		
-		bindViewToModel();
+		if (hRF != null)
+			bindViewToModel();
 	}
 
 	private void bindViewToModel() {
