@@ -10,17 +10,17 @@
 		<dependency>
 			<groupId>com.miglayout</groupId>
 			<artifactId>miglayout-swing</artifactId>
-			<version>5.0</version>
+			<version>11.4.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jfree</groupId>
 			<artifactId>jfreechart</artifactId>
-			<version>1.0.19</version>
+			<version>1.5.5</version>
 		</dependency>
 		<dependency>
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna</artifactId>
-			<version>5.13.0</version>
+			<version>5.15.0</version>
 		</dependency>
 	</dependencies>
 	<build>

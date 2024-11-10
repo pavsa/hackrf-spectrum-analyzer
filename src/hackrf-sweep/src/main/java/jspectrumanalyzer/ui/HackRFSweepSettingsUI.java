@@ -101,9 +101,10 @@ public class HackRFSweepSettingsUI extends JPanel
 		int maxFreq = 7250;
 		int freqStep = 1;
 
-		JPanel panelMainSettings	= new JPanel(new MigLayout("", "[123.00px,grow,leading]", "[][][::0px][][]"));
+		JPanel panelMainSettings	= new JPanel(new MigLayout("", "[123.00px,grow,leading]", "[][][::0px][][][][]"));
 		panelMainSettings.setBorder(new EmptyBorder(UIManager.getInsets("TabbedPane.tabAreaInsets")));;
 		panelMainSettings.setBackground(Color.BLACK);
+
 		JLabel lblNewLabel = new JLabel("Frequency start [MHz]");
 		lblNewLabel.setForeground(Color.WHITE);
 		panelMainSettings.add(lblNewLabel, "cell 0 0,growx,aligny center");
@@ -123,24 +124,22 @@ public class HackRFSweepSettingsUI extends JPanel
 		txtHackrfConnected.setText("HackRF disconnected");
 		txtHackrfConnected.setForeground(Color.WHITE);
 		txtHackrfConnected.setBackground(Color.BLACK);
-		panelMainSettings.add(txtHackrfConnected, "cell 0 23,growx");
 		txtHackrfConnected.setBorder(null);
+		panelMainSettings.add(txtHackrfConnected, "cell 0 5,growx");
 		
 		btnPause = new JButton("Pause");
-		panelMainSettings.add(btnPause, "cell 0 25,growx");
 		btnPause.setBackground(Color.black);
+		panelMainSettings.add(btnPause, "cell 0 6,growx");
 
 		
-		
-		
-		JTabbedPane tabbedPane	= new JTabbedPane(JTabbedPane.TOP);
 		setLayout(new BorderLayout());
+		JTabbedPane tabbedPane	= new JTabbedPane(JTabbedPane.TOP);
 		add(panelMainSettings, BorderLayout.NORTH);
 		add(tabbedPane, BorderLayout.CENTER);
 		tabbedPane.setForeground(Color.WHITE);
 		tabbedPane.setBackground(Color.BLACK);
 
-		JPanel tab1	= new JPanel(new MigLayout("", "[123.00px,grow,leading]", "[][][0][][][0][][][0][][][0][][][0][][0][][grow,fill]"));
+		JPanel tab1	= new JPanel(new MigLayout("", "[123.00px,grow,leading]", "[][][0][][][0][][][0][][][0][][][0][][0][][][][grow,fill]"));
 		tab1.setForeground(Color.WHITE);
 		tab1.setBackground(Color.BLACK);
 		
@@ -168,7 +167,7 @@ public class HackRFSweepSettingsUI extends JPanel
 			sliderGain.setForeground(Color.WHITE);
 			tab1.add(sliderGain, "flowy,cell 0 1,growx");
 
-			JLabel lbl_gainValue = new JLabel(hackRFSettings.getGain() + "dB");
+			JLabel lbl_gainValue = new JLabel(hRF == null ? "0" : hRF.getGain() + "dB");
 			lbl_gainValue.setForeground(Color.WHITE);
 			tab1.add(lbl_gainValue, "cell 0 1,alignx right");
 
@@ -217,8 +216,10 @@ public class HackRFSweepSettingsUI extends JPanel
 			((ListEditor) spinnerFFTBinHz.getEditor()).getTextField().setHorizontalAlignment(JTextField.RIGHT);
 			
 
-			hackRFSettings.getGain().addListener((gain) -> lbl_gainValue.setText(String.format(" %ddB  [LNA: %ddB  VGA: %ddB]", 
-					gain, hackRFSettings.getGainLNA().getValue(), hackRFSettings.getGainVGA().getValue())));
+			if (hRF != null) {
+				hRF.getGain().addListener((gain) -> lbl_gainValue.setText(String.format(" %ddB  [LNA: %ddB  VGA: %ddB]", 
+						gain, hRF.getGainLNA().getValue(), hRF.getGainVGA().getValue())));
+			}
 			
 
 			JLabel lblNumberOfSamples = new JLabel("Number of samples");
@@ -245,7 +246,6 @@ public class HackRFSweepSettingsUI extends JPanel
 			
 			Label labelVersion = new Label("Version: "+Version.version);
 			tab1.add(labelVersion, "flowx,cell 0 17");
-			
 			
 			JButton btnAbout = new JButton("Visit homepage");
 			btnAbout.addActionListener(e -> {
@@ -362,7 +362,7 @@ public class HackRFSweepSettingsUI extends JPanel
 		tab2.add(checkBoxWaterfallEnabled, "cell 0 0,alignx right");
 		
 		comboBoxDecayRate = new JComboBox(
-				new Vector<>(IntStream.rangeClosed(hRF.getPersistentDisplayDecayRate().getMin(), hRF.getPersistentDisplayDecayRate().getMax()).
+				new Vector<>(IntStream.rangeClosed(hRF != null ? hRF.getPersistentDisplayDecayRate().getMin() : 0, hRF != null ? hRF.getPersistentDisplayDecayRate().getMax() : 1).
 						boxed().collect(Collectors.toList())));
 		tab2.add(comboBoxDecayRate, "cell 0 16,alignx right");
 		
