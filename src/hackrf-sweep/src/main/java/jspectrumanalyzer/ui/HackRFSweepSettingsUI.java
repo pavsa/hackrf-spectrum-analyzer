@@ -209,7 +209,7 @@ public class HackRFSweepSettingsUI extends JPanel
 
 			spinnerFFTBinHz = new JSpinner();
 			spinnerFFTBinHz.setFont(new Font("Monospaced", Font.BOLD, 16));
-			spinnerModelFFTBinHz = new SpinnerListModel(new String[] { "1 000", "2 000", "5 000", "10 000", "20 000", 
+			spinnerModelFFTBinHz = new SpinnerListModel(new String[] { "2 445", "5 000", "10 000", "20 000", 
 					"50 000", "100 000", "200 000", "500 000", "1 000 000", "2 000 000", "5 000 000" });
 			spinnerFFTBinHz.setModel(spinnerModelFFTBinHz);
 			tab1.add(spinnerFFTBinHz, "cell 0 12,growx");
