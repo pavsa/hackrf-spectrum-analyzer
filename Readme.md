@@ -36,9 +36,9 @@ Windows:
 Linux:  
   
 1. To run, ensure these packages are installed (exact name depends on distro):  
-`libusb-1.0 libfftw3 default-jdk`   
+`libusb-1.0-0-dev libfftw3 default-jdk`   
 1. Newer openjdk might work also, not tested. On Ubuntu 18.04:  
-`sudo apt install libusb-1.0 libfftw3-bin default-jdk`  
+`sudo apt install libusb-1.0-0-dev libfftw3-bin default-jdk`  
 1. Follow the [HackRF USB permissions setup](https://github.com/mossmann/hackrf/wiki/FAQ) - you have to add rules to udev to allow hackrf library to open the HackRF USB device, it does not work by default.    
 
 If something does not work, you can try to build it manually.
@@ -46,7 +46,7 @@ If something does not work, you can try to build it manually.
 ### Building  
 Building native libraries for Windows (using mingw-w64) and linux is done in one unified build using Ubuntu 18.04 x64.  
 1. You'll need to install these packages:  
-`sudo apt install build-essential maven git libusb-1.0 libfftw3-bin libfftw3-dev default-jdk mingw-w64`
+`sudo apt install build-essential maven git libusb-1.0-0-dev libfftw3-bin libfftw3-dev default-jdk mingw-w64`
 1. `git clone --recurse-submodules --depth=1 https://github.com/pavsa/hackrf-spectrum-analyzer.git`
 1. `cd hackrf-spectrum-analyzer/src/hackrf-sweep/`
 1. `make`
